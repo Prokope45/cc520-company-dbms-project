@@ -13,12 +13,12 @@ DESCRIPTION
     Reviewed by: Josh Weese
 
 FUNCTIONS
-    create_app() -> Flask
+    create_app() -> flask.app.Flask
         Create and configure the Flask application.
-
+        
         Returns:
             Flask: Configured Flask application instance.
 
 FILE
-    /workspaces/database-repository-pattern-example/src/web/app.py
+    /home/runner/work/ksu-cc520-spring-2026-classroom-c6fd68-homework-8-community-garden-app-database-repository-pattern-e/ksu-cc520-spring-2026-classroom-c6fd68-homework-8-community-garden-app-database-repository-pattern-e/src/web/app.py
 ```
