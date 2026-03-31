@@ -245,15 +245,8 @@ poetry install
 
 Though you might need to select an interpreter for VS Code if this is your first time running it. To select the interpreter, press `CTRL + SHIFT + P` or `F1` to open the command pallet (shows up at the top of VS Code), then search for and click on `Python: Select Interpreter`. If you are using Poetry's in-project virtual environment, select `.venv`.
 
-Then create a `.env` file in the project root to store your database connection information. Add the following, replacing the values as needed:
+Then create a `.env` file in the project root to store your database connection information. An example is included down below in step 1.
 
-### .env file example
-```
-SERVER=localhost
-DATABASE=cc520
-USER=cc520-admin
-PASSWORD=database3ssentials!
-```
 
 ## Getting Started with the Flask Application
 
@@ -264,10 +257,10 @@ Follow these steps to set up and run the Flask application.
 Create a `.env` file in the project root with your database connection information:
 
 ```
-SERVER=localhost
-DATABASE=cc520
-USER=cc520-admin
-PASSWORD=database3ssentials!
+DB_SERVER=localhost
+DB_DATABASE=cc520
+DB_USER=cc520-admin
+DB_PASSWORD=database3ssentials!
 ```
 
 ### 2. Rebuild the database (first time, then as needed)

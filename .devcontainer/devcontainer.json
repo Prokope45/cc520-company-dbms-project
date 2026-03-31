@@ -71,7 +71,6 @@
         "ms-mssql.mssql",
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "ms-dotnettools.dotnet-interactive-vscode",
         "ms-toolsai.datawrangler",
         "marimo-team.vscode-marimo",
         "bierner.markdown-mermaid"

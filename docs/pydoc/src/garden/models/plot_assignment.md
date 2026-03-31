@@ -120,5 +120,5 @@ CLASSES
      |      list of weak references to the object (if defined)
 
 FILE
-    /home/runner/work/ksu-cc520-spring-2026-classroom-c6fd68-homework-8-community-garden-app-database-repository-pattern-e/ksu-cc520-spring-2026-classroom-c6fd68-homework-8-community-garden-app-database-repository-pattern-e/src/garden/models/plot_assignment.py
+    /home/runner/work/database-repository-pattern-example/database-repository-pattern-example/src/garden/models/plot_assignment.py
 ```

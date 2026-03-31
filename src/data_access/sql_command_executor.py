@@ -33,10 +33,10 @@ class SqlCommandExecutor:
             password: The password for the user.
             trusted: Whether or not this is a trusted connection.
         """
-        resolved_database = database or getenv('DATABASE')
-        resolved_server = server or getenv('SERVER')
-        resolved_user = user or getenv('USER')
-        resolved_password = password or getenv('PASSWORD')
+        resolved_database = database or getenv('DB_DATABASE')
+        resolved_server = server or getenv('DB_SERVER')
+        resolved_user = user or getenv('DB_USER')
+        resolved_password = password or getenv('DB_PASSWORD')
 
         params = []
         if resolved_database:

@@ -7,10 +7,15 @@ from __future__ import annotations
 
 import argparse
 import re
+from os import getenv
 from pathlib import Path
 from typing import Iterable
 
+from dotenv import load_dotenv
+
 from src.data_access.sql_command_executor import SqlCommandExecutor
+
+load_dotenv()
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -104,11 +109,15 @@ def run_rebuild(*, server: str = "", database: str = "", user: str = "", passwor
     Returns:
         None: This function performs database side effects only.
     """
+    resolved_server = server or getenv('DB_SERVER', '')
+    resolved_database = database or getenv('DB_DATABASE', '')
+    resolved_user = user or getenv('DB_USER', '')
+    resolved_password = password or getenv('DB_PASSWORD', '')
     executor = SqlCommandExecutor(
-        server=server,
-        database=database,
-        user=user,
-        password=password,
+        server=resolved_server,
+        database=resolved_database,
+        user=resolved_user,
+        password=resolved_password,
         trusted=trusted,
     )
 

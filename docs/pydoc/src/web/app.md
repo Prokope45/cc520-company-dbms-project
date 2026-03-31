@@ -20,5 +20,5 @@ FUNCTIONS
             Flask: Configured Flask application instance.
 
 FILE
-    /home/runner/work/ksu-cc520-spring-2026-classroom-c6fd68-homework-8-community-garden-app-database-repository-pattern-e/ksu-cc520-spring-2026-classroom-c6fd68-homework-8-community-garden-app-database-repository-pattern-e/src/web/app.py
+    /home/runner/work/database-repository-pattern-example/database-repository-pattern-example/src/web/app.py
 ```
