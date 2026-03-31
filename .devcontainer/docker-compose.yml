@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: DevContainer.Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+    network_mode: service:ms-sql-server
+    command: sleep infinity
+    depends_on:
+      ms-sql-server:
+        condition: service_started
+        restart: true
+  ms-sql-server:
+    # container_name: ms-sql-server
+    build:
+      context: .
+      dockerfile: MSSQLServer.DockerFile
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    environment:
+      - name=sqlserver-container
+      - hostname=sqlserver-container
+volumes:
+  sqlvolume:
