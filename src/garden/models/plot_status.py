@@ -3,7 +3,7 @@ Data model for the plot status.
 Author: Jared Paubel
 """
 
-class Plot:
+class PlotStatus:
     """Represent a plot status record returned by the repository layer."""
 
     def __init__(
