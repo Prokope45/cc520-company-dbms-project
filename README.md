@@ -1,3 +1,4 @@
+[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=23546253)
 # MS SQL Server Python Project Template
 This project comes with a two-part development container:
 - A Microsoft SQL Server Express server. This comes setup with two databases. [WideWorldImporters](https://github.com/Microsoft/sql-server-samples/tree/master/samples/databases/wide-world-importers) and **CC520**, which is a blank database. How to use these is outlined below.
