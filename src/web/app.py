@@ -111,6 +111,15 @@ def create_app() -> Flask:
         """
         return render_template("plots.html")
 
+    @app.get("/assign-plots")
+    def assign_plots_page() -> str:
+        """Render the assign plots page shell.
+
+        Returns:
+            str: Rendered HTML for the assign_plots template.
+        """
+        return render_template("assign_plots.html")
+
     @app.get("/api/gardeners/<int:gardener_id>/assignments")
     def retrieve_assignments_for_gardener(gardener_id: int):
         """Return a gardener's details together with plot assignments as JSON.

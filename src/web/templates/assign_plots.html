@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Assign Plots</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plots.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.3.7/r-3.0.8/sc-2.4.3/datatables.min.css" rel="stylesheet" integrity="sha384-RFcdYm0Rpd21xAb9bnIHNVUqzA/1RSoxY1SCFnwpz0ecLCgzPqTJwjzkHmmeb0Ou" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+    <div class="container py-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h1 class="h3 mb-0">Assign Plots</h1>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ url_for('index') }}">Back to home</a>
+                </div>
+                <p class="text-muted small mb-1">Available plots for gardener assignment loaded from API endpoint.</p>
+                <p class="text-muted small mb-3">Plots shown are available for new assignments or have existing assignment details displayed.</p>
+
+                <table id="plots-table" class="table table-striped table-hover table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Plot ID</th>
+                            <th>Plot Tag</th>
+                            <th>Location</th>
+                            <th>Size (sq ft)</th>
+                            <th>Raised Bed</th>
+                            <th>Status</th>
+                            <th>Assignment Notes</th>
+                            <th>Assignment Start</th>
+                            <th>Assignment End</th>
+                        </tr>
+                    </thead>
+                    <tbody id="plots-table-body">
+                        <!-- Plot data will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.3.7/r-3.0.8/sc-2.4.3/datatables.min.js" integrity="sha384-ItTu+vlKQk9q9uF6phRL3/QV/n9cEA3PyIFHvSjDlm7srGTWBDdNFyEXV+MluFI9" crossorigin="anonymous"></script>
+    <script>
+        let plotTable;
+
+        async function loadPlots() {
+            try {
+                const response = await fetch("/api/plots");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const plots = await response.json();
+                renderPlotsTable(plots);
+            } catch (error) {
+                console.error("Error fetching plot data:", error);
+                document.getElementById('plots-table-body').innerHTML = 
+                    '<tr><td colspan="9" class="text-danger">Error loading plots: ' + error.message + '</td></tr>';
+            }
+        }
+
+        function renderPlotsTable(plots) {
+            const tbody = document.getElementById('plots-table-body');
+            tbody.innerHTML = ''; // Clear existing rows
+
+            if (!plots || plots.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center">No available plots found.</td></tr>';
+                return;
+            }
+
+            plots.forEach(plot => {
+                const row = tbody.insertRow();
+                
+                // Plot ID
+                row.insertCell().textContent = plot.plotId || '';
+                // Plot Tag
+                row.insertCell().textContent = plot.plotTag || '';
+                // Location
+                row.insertCell().textContent = plot.locationDescription || '';
+                // Size (sq ft)
+                row.insertCell().textContent = plot.sizeSqFt || '';
+                // Raised Bed
+                row.insertCell().textContent = plot.isRaisedBed ? 'Yes' : 'No';
+                // Status
+                const statusCell = row.insertCell();
+                statusCell.textContent = plot.status || 'Available';
+                statusCell.className = plot.status === 'Active' ? 'text-success fw-bold' : 'text-muted';
+
+                // Assignment Notes (from existing assignment if any)
+                const notesCell = row.insertCell();
+                notesCell.textContent = plot.notes || '';
+                notesCell.className = plot.notes ? 'text-muted' : '';
+
+                // Assignment Start Date
+                const startDateCell = row.insertCell();
+                startDateCell.textContent = plot.startDate || '';
+                startDateCell.className = plot.startDate ? 'text-muted' : '';
+
+                // Assignment End Date
+                const endDateCell = row.insertCell();
+                endDateCell.textContent = plot.endDate || '';
+                endDateCell.className = plot.endDate ? 'text-muted' : '';
+            });
+
+            // Initialize DataTables
+            plotTable = $('#plots-table').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', loadPlots);
+    </script>
+</body>
+</html>
