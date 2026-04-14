@@ -1,0 +1,29 @@
+/* CSS specific to garden plots */
+.plot-table-container {
+    margin-top: 20px;
+}
+
+#plots-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#plots-table th, #plots-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#plots-table thead tr {
+    background-color: #f2f2f2;
+}
+
+.status-active {
+    color: green;
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: red;
+    font-weight: bold;
+}

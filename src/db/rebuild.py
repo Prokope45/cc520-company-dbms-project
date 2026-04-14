@@ -41,6 +41,10 @@ PROCEDURE_FILES = [
     Path(f"{SQL_ROOT}/Procedures/Garden.GetGardenerByEmail.sql"),
     Path(f"{SQL_ROOT}/Procedures/Garden.SavePlotAssignment.sql"),
     Path(f"{SQL_ROOT}/Procedures/Garden.RetrieveAssignmentsForGardener.sql"),
+    Path(f"{SQL_ROOT}/Procedures/Garden.RetrievePlots.sql"),
+    Path(f"{SQL_ROOT}/Procedures/Garden.RetrievePlotStatus.sql"),
+    Path(f"{SQL_ROOT}/Procedures/Garden.RetrieveAvailablePlots.sql"),
+    Path(f"{SQL_ROOT}/Procedures/Garden.UpdatePlotStatus.sql"),
 ]
 
 DATA_FILES = [

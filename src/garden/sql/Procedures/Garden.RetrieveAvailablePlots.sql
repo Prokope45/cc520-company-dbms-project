@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE Garden.GetAvailablePlots
+CREATE OR ALTER PROCEDURE Garden.RetrieveAvailablePlots
 AS
 
 SELECT
@@ -14,6 +14,6 @@ WHERE
     StatusId = (
         SELECT PS.StatusId
         FROM Garden.PlotStatus PS
-        WHERE PS.StatusName = 'Available'
+        WHERE PS.StatusName = N'Available'
     );
 GO

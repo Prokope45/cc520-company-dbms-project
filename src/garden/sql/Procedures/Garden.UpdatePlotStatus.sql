@@ -5,5 +5,6 @@ AS
 
 UPDATE Garden.Plots
 SET StatusId = @NewStatusId
-WHERE PlotId = @PlotId;
+FROM Garden.Plots P
+WHERE P.PlotId = @PlotId;
 GO
