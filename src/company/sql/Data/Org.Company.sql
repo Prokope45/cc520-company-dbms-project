@@ -1,0 +1,21 @@
+DECLARE @CompanyStaging TABLE
+(
+    CompanyID INT NOT NULL,
+    Name NVARCHAR(255) NOT NULL,
+    CreatedDate DATETIME2 NOT NULL
+);
+
+INSERT @CompanyStaging(CompanyID, Name, CreatedDate)
+VALUES
+(1, N'TechCorp Industries', GETDATE());
+
+MERGE Org.Company T
+USING (SELECT * FROM @CompanyStaging) S ON T.CompanyID = S.CompanyID
+WHEN MATCHED AND (
+    T.Name <> S.Name OR
+    T.CreatedDate <> S.CreatedDate
+) THEN
+    UPDATE SET Name = S.Name, CreatedDate = S.CreatedDate
+WHEN NOT MATCHED THEN
+    INSERT(Name, CreatedDate)
+    VALUES(S.Name, S.CreatedDate);

@@ -1,0 +1,25 @@
+DECLARE @DepartmentStaging TABLE
+(
+    CompanyID INT NOT NULL,
+    Name NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(255)
+);
+
+INSERT @DepartmentStaging(CompanyID, Name, Description)
+VALUES
+(1, N'Engineering', N'Software development and engineering'),
+(1, N'Human Resources', N'HR and recruitment'),
+(1, N'Finance', N'Financial planning and analysis'),
+(1, N'Sales', N'Sales and business development'),
+(1, N'Marketing', N'Marketing and communications');
+
+MERGE Org.Department T
+USING (SELECT * FROM @DepartmentStaging) S ON T.CompanyID = S.CompanyID AND T.Name = S.Name
+WHEN MATCHED AND (
+    T.Name <> S.Name OR
+    T.Description <> S.Description
+) THEN
+    UPDATE SET [Name] = S.Name, [Description] = S.Description
+WHEN NOT MATCHED THEN
+    INSERT(CompanyID, [Name], [Description])
+    VALUES(S.CompanyID, S.Name, S.Description);
