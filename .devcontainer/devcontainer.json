@@ -59,29 +59,14 @@
         "mssql.format.keywordCasing": "uppercase",
         "mssql.format.alignColumnDefinitionsInColumns": true,
         // Use ${containerWorkspaceFolder} so paths stay portable
-        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python",
         // Optional quality-of-life settings
-        "python.terminal.activateEnvironment": true,
-        "python.analysis.indexing": true,
-        "python.terminal.useEnvFile":true
       },
       "extensions": [
         "ms-vscode-remote.remote-wsl",
         "yzhang.markdown-all-in-one",
         "ms-mssql.mssql",
-        "ms-python.python",
-        "ms-python.vscode-pylance",
         "ms-toolsai.datawrangler",
-        "marimo-team.vscode-marimo",
         "bierner.markdown-mermaid"
-      ]
-    },
-    "jetbrains": {
-      "backend": "PyCharm",
-      "plugins": [
-        "com.jetbrains.docker",
-        "com.intellij.database",
-        "PythonCore"
       ]
     }
   },
@@ -104,5 +89,5 @@
   "remoteEnv": {
     "SQL_SECRETS": "{\"credentials\":[{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|db:CC520|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:CC520|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|db:WideWorldImporters|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:WideWorldImporters|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|user:SA\",\"password\":\"sup3rs3cur3P@ssword\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:master|user:SA\",\"password\":\"sup3rs3cur3P@ssword\"}]}"
   },
-  "postCreateCommand": "mkdir -p ~/.sqlsecrets && echo \"$SQL_SECRETS\" > ~/.sqlsecrets/sqlsecrets.json && python -m pip install --upgrade pip poetry && poetry config virtualenvs.in-project true && poetry install --no-interaction"
+  "postCreateCommand": "mkdir -p ~/.sqlsecrets && echo \"$SQL_SECRETS\" > ~/.sqlsecrets/sqlsecrets.json"
 }
