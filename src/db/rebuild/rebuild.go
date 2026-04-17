@@ -33,28 +33,28 @@ func (r *Rebuilder) Rebuild(ctx context.Context) error {
 	// Step 1: Clear the database
 	fmt.Println("\n[Step 1] Clearing database...")
 	if err := r.clearDatabase(ctx); err != nil {
-		return fmt.Errorf("[ ] failed to clear database: %w", err)
+		return fmt.Errorf("failed to clear database: %w", err)
 	}
 	fmt.Println("[x] Database cleared")
 
 	// Step 2: Create schema
 	fmt.Println("\n[Step 2] Creating schema...")
 	if err := r.createSchema(ctx); err != nil {
-		return fmt.Errorf("[ ] failed to create schema: %w", err)
+		return fmt.Errorf("failed to create schema: %w", err)
 	}
 	fmt.Println("[x] Schema created")
 
 	// Step 3: Create tables in dependency order
 	fmt.Println("\n[Step 3] Creating tables...")
 	if err := r.createTables(ctx); err != nil {
-		return fmt.Errorf("[ ] failed to create tables: %w", err)
+		return fmt.Errorf("failed to create tables: %w", err)
 	}
 	fmt.Println("[x] Tables created")
 
 	// Step 4: Seed data
 	fmt.Println("\n[Step 4] Seeding data...")
 	if err := r.seedData(ctx); err != nil {
-		return fmt.Errorf("[ ] failed to seed data: %w", err)
+		return fmt.Errorf("failed to seed data: %w", err)
 	}
 	fmt.Println("[x] Data seeded")
 
@@ -145,10 +145,10 @@ func (r *Rebuilder) createTables(ctx context.Context) error {
 func (r *Rebuilder) seedData(ctx context.Context) error {
 	// Define data files in the correct order (respecting foreign key dependencies)
 	dataOrder := []string{
+		"Address",
 		"EmployeeType",
 		"Role",
 		"Company",
-		"Address",
 		"Person",     // Depends on Address
 		"Department", // Depends on Company
 		"Employee",   // Depends on Person, EmployeeType

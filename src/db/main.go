@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 	_ "github.com/microsoft/go-mssqldb"
@@ -39,7 +40,9 @@ func main() {
 	fmt.Println("Connected to database successfully")
 
 	// Create the rebuilder
-	rebuilder := rebuild.NewRebuilder(dbConn, "src/company/sql")
+	cwd, _ := os.Getwd()
+	sqlPath := filepath.Join(cwd, "src", "company", "sql")
+	rebuilder := rebuild.NewRebuilder(dbConn, sqlPath)
 
 	// Rebuild the database
 	ctx := context.Background()
