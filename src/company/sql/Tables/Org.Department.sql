@@ -7,7 +7,7 @@ BEGIN
         [Name] NVARCHAR(255) NOT NULL UNIQUE,
         [Description] NVARCHAR(255),
         CONSTRAINT [FK_Department_Company] FOREIGN KEY ([CompanyID])
-            REFERENCES Org.[Company]([CompanyID])
+            REFERENCES Org.[Company] ([CompanyID])
             ON DELETE CASCADE
     );
 END;
