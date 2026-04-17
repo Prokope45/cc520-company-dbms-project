@@ -13,7 +13,7 @@ BEGIN
         --     ON DELETE SET NULL,
         --     ON UPDATE CASCADE,
         CONSTRAINT [FK_Employee_Person] FOREIGN KEY ([PersonID])
-            REFERENCES [Person]([PersonID])
+            REFERENCES Org.[Person]([PersonID])
         -- CONSTRAINT [FK_Employee_EmployeeType] FOREIGN KEY ([EmployeeTypeID])
         --     REFERENCES [EmployeeType]([EmployeeTypeID])
         -- CONSTRAINT [UK_Employee_PersonID] UNIQUE ([PersonID]),

@@ -9,6 +9,9 @@ BEGIN
             ([Name] = 'Member') OR
             ([Name] = 'Manager') OR
             ([Name] = 'Director') OR
+            ([Name] = 'HR Manager') OR
+            ([Name] = 'CFO') OR
+            ([Name] = 'CTO') OR
             ([Name] = 'CEO')
         )
     );
