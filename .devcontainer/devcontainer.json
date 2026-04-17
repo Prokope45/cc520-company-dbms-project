@@ -5,6 +5,9 @@
   "customizations": {
     "vscode": {
       "settings": {
+        "roo-cline.apiProvider": "lm-studio",
+        "roo-cline.lmStudioBaseUrl": "http://host.docker.internal:1234",
+        "roo-cline.model": "qwen/qwen3.5-9b",
         "mssql.connections": [
           {
             "profileName": "wide-world-importers",
@@ -57,7 +60,7 @@
         "editor.minimap.enabled": false,
         "mssql.format.datatypeCasing": "uppercase",
         "mssql.format.keywordCasing": "uppercase",
-        "mssql.format.alignColumnDefinitionsInColumns": true,
+        "mssql.format.alignColumnDefinitionsInColumns": true
         // Use ${containerWorkspaceFolder} so paths stay portable
         // Optional quality-of-life settings
       },
@@ -66,7 +69,8 @@
         "yzhang.markdown-all-in-one",
         "ms-mssql.mssql",
         "ms-toolsai.datawrangler",
-        "bierner.markdown-mermaid"
+        "bierner.markdown-mermaid",
+        "rooveterinaryinc.roo-cline"
       ]
     }
   },
