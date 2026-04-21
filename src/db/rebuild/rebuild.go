@@ -26,8 +26,40 @@ func NewRebuilder(db *sql.DB, baseDir string) *Rebuilder {
 	}
 }
 
+// Run executes the requested database operation with dependency resolution
+func (r *Rebuilder) Run(ctx context.Context, operation string) error {
+	var possible_error error = nil
+
+	switch operation {
+	case "rebuild":
+		possible_error = r.rebuild(ctx)
+	case "clear":
+		possible_error = r.clearDatabase(ctx)
+	case "schema":
+		possible_error = r.createSchema(ctx)
+	case "tables":
+		possible_error = r.createTables(ctx)
+	case "seed":
+		// Auto-resolve dependencies: create schema & tables before seeding
+		fmt.Println("\n[seed] Creating schema (dependency)...")
+		if err := r.createSchema(ctx); err != nil {
+			return fmt.Errorf("failed to create schema for seed: %w", err)
+		}
+		fmt.Println("[seed] Creating tables (dependency)...")
+		if err := r.createTables(ctx); err != nil {
+			return fmt.Errorf("failed to create tables for seed: %w", err)
+		}
+		possible_error = r.seedData(ctx)
+	default:
+		r.Close()
+		return fmt.Errorf("unknown operation: %s (valid: rebuild, clear, schema, tables, seed)", operation)
+	}
+	r.Close()
+	return possible_error
+}
+
 // Rebuild rebuilds the database by clearing it and recreating schemas, tables, and seeding data
-func (r *Rebuilder) Rebuild(ctx context.Context) error {
+func (r *Rebuilder) rebuild(ctx context.Context) error {
 	fmt.Println("=== Starting Database Rebuild ===")
 
 	// Step 1: Clear the database
