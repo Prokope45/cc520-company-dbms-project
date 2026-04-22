@@ -99,6 +99,7 @@ func (r *Rebuilder) clearDatabase(ctx context.Context) error {
 	// Drop tables in reverse dependency order to avoid foreign key constraint violations
 	dropOrder := []string{
 		"DepEmpRole",
+		"HourlyEmployee",
 		"Employee",
 		"Department",
 		"Person",
@@ -151,10 +152,11 @@ func (r *Rebuilder) createTables(ctx context.Context) error {
 		"EmployeeType",
 		"Role",
 		"Company",
-		"Person",     // Depends on Address
-		"Department", // Depends on Company
-		"Employee",   // Depends on Person, EmployeeType
-		"DepEmpRole", // Depends on Role, Department, Employee
+		"Person",         // Depends on Address
+		"Department",     // Depends on Company
+		"Employee",       // Depends on Person, EmployeeType, HourlyEmployee
+		"HourlyEmployee", // Depends on EmployeeType, Employee
+		"DepEmpRole",     // Depends on Role, Department, Employee
 	}
 
 	for _, tableName := range tableOrder {
@@ -181,10 +183,11 @@ func (r *Rebuilder) seedData(ctx context.Context) error {
 		"EmployeeType",
 		"Role",
 		"Company",
-		"Person",     // Depends on Address
-		"Department", // Depends on Company
-		"Employee",   // Depends on Person, EmployeeType
-		"DepEmpRole", // Depends on Role, Department, Employee
+		"Person",         // Depends on Address
+		"Department",     // Depends on Company
+		"Employee",       // Depends on Person, EmployeeType
+		"HourlyEmployee", // Depends on Employee
+		"DepEmpRole",     // Depends on Role, Department, Employee
 	}
 
 	for _, dataFile := range dataOrder {
