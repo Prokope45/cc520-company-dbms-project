@@ -100,6 +100,8 @@ func (r *Rebuilder) clearDatabase(ctx context.Context) error {
 	dropOrder := []string{
 		"DepEmpRole",
 		"HourlyEmployee",
+		"SalaryEmployee",
+		"Salary",
 		"Employee",
 		"Department",
 		"Person",
@@ -155,7 +157,9 @@ func (r *Rebuilder) createTables(ctx context.Context) error {
 		"Person",         // Depends on Address
 		"Department",     // Depends on Company
 		"Employee",       // Depends on Person, EmployeeType, HourlyEmployee
-		"HourlyEmployee", // Depends on EmployeeType, Employee
+		"Salary",         // Depends on Salary
+		"SalaryEmployee", // Depends on Employee, Salary
+		"HourlyEmployee", // Depends on Employee
 		"DepEmpRole",     // Depends on Role, Department, Employee
 	}
 
@@ -186,6 +190,8 @@ func (r *Rebuilder) seedData(ctx context.Context) error {
 		"Person",         // Depends on Address
 		"Department",     // Depends on Company
 		"Employee",       // Depends on Person, EmployeeType
+		"Salary",         // Depends on Salary
+		"SalaryEmployee", // Depends on Employee, Salary
 		"HourlyEmployee", // Depends on Employee
 		"DepEmpRole",     // Depends on Role, Department, Employee
 	}
