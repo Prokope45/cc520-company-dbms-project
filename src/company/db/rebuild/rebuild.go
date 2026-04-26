@@ -1,7 +1,13 @@
 // Package rebuild provides database rebuilding functionality
+// Authors:
+// 	- Jared Paubel
+//  - RooCode agent - local qwen/qwen3.5-9b
+// Percentage written by Agent: 10%
+
 package rebuild
 
 import (
+	"cc520-company-dbms-project/src/company/db/executor/registry"
 	"context"
 	"database/sql"
 	"fmt"
@@ -14,15 +20,17 @@ import (
 
 // Rebuilder handles database rebuilding operations
 type Rebuilder struct {
-	db      *sql.DB
-	baseDir string
+	db       *sql.DB
+	baseDir  string
+	registry *registry.Registry
 }
 
 // NewRebuilder creates a new Rebuilder instance
 func NewRebuilder(db *sql.DB, baseDir string) *Rebuilder {
 	return &Rebuilder{
-		db:      db,
-		baseDir: baseDir,
+		db:       db,
+		baseDir:  baseDir,
+		registry: registry.NewRegistry(),
 	}
 }
 
@@ -37,6 +45,8 @@ func (r *Rebuilder) Run(ctx context.Context, operation string) error {
 		possible_error = r.clearDatabase(ctx)
 	case "schema":
 		possible_error = r.createSchema(ctx)
+	case "procedures":
+		possible_error = r.createProcedures(ctx)
 	case "tables":
 		possible_error = r.createTables(ctx)
 	case "seed":
@@ -83,8 +93,15 @@ func (r *Rebuilder) rebuild(ctx context.Context) error {
 	}
 	fmt.Println("[x] Tables created")
 
-	// Step 4: Seed data
-	fmt.Println("\n[Step 4] Seeding data...")
+	// Step 4: Create stored procedures
+	fmt.Println("\n[Step 4] Creating stored procedures...")
+	if err := r.createProcedures(ctx); err != nil {
+		return fmt.Errorf("failed to create stored procedures: %w", err)
+	}
+	fmt.Println("[x] Stored procedures created")
+
+	// Step 5: Seed data
+	fmt.Println("\n[Step 5] Seeding data...")
 	if err := r.seedData(ctx); err != nil {
 		return fmt.Errorf("failed to seed data: %w", err)
 	}
@@ -117,6 +134,14 @@ func (r *Rebuilder) clearDatabase(ctx context.Context) error {
 			return fmt.Errorf("failed to drop table %s: %w", tableName, err)
 		}
 		fmt.Printf("  Dropped table: %s\n", tableName)
+	}
+
+	for proc := range r.registry.GetAll() {
+		query := fmt.Sprintf("DROP PROCEDURE IF EXISTS [Org].[%s]", proc)
+		if _, err := r.db.ExecContext(ctx, query); err != nil {
+			return fmt.Errorf("failed to drop procedure %s: %w", proc, err)
+		}
+		fmt.Printf("  Dropped procedure: %s\n", proc)
 	}
 
 	// Drop the schema
@@ -176,6 +201,44 @@ func (r *Rebuilder) createTables(ctx context.Context) error {
 		fmt.Printf("  Created table: %s\n", tableName)
 	}
 
+	return nil
+}
+
+// createProcedures creates all stored procedures
+func (r *Rebuilder) createProcedures(ctx context.Context) error {
+	proceduresDir := filepath.Join(r.baseDir, "Procedures", "company")
+	entries, err := os.ReadDir(proceduresDir)
+	if err != nil {
+		// If directory doesn't exist, just skip
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return fmt.Errorf("failed to read procedures directory: %w", err)
+	}
+
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".sql") {
+			continue
+		}
+
+		procPath := filepath.Join(proceduresDir, entry.Name())
+		procSQL, err := os.ReadFile(procPath)
+		if err != nil {
+			return fmt.Errorf("failed to read procedure SQL file %s: %w", entry.Name(), err)
+		}
+
+		// Split by GO since go-mssqldb doesn't support it natively
+		batches := strings.Split(string(procSQL), "GO")
+		for _, batch := range batches {
+			batch = strings.TrimSpace(batch)
+			if batch != "" {
+				if _, err := r.db.ExecContext(ctx, batch); err != nil {
+					return fmt.Errorf("failed to create procedure %s: %w", entry.Name(), err)
+				}
+			}
+		}
+		fmt.Printf("  Created procedure: %s\n", entry.Name())
+	}
 	return nil
 }
 

@@ -2,7 +2,7 @@
 package main
 
 import (
-	"cc520-company-dbms-project/src/db/rebuild"
+	"cc520-company-dbms-project/src/company/db/rebuild"
 	"context"
 	"database/sql"
 	"flag"

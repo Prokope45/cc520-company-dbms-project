@@ -2,7 +2,7 @@
 // Authors:
 //	- Jared Paubel
 // 	- Roo agent - local qwen/qwen3.5-9b
-// Percentage written by Agent: 90%
+// Percentage written by Agent: 80%
 
 package executor
 
@@ -19,7 +19,8 @@ import (
 
 func TestMain(m *testing.M) {
 	// Path relative to src/db/executor/
-	err := godotenv.Load("../../../.env")
+	envPath := "../../../../.env"
+	err := godotenv.Load(envPath)
 	if err != nil {
 		log.Printf("Warning: .env file not found")
 	}
@@ -43,35 +44,35 @@ func TestExecutor_Execute(t *testing.T) {
 	defer db.Close()
 
 	// Create executor
-	exec := NewExecutor(db, "src/company/sql/Procedures", "company")
+	exec := NewExecutor(db)
 
 	ctx := context.Background()
 
 	// Test 1: Execute sp_GetAllCompanies (no parameters)
 	t.Run("GetAllCompanies", func(t *testing.T) {
-		result := exec.Execute(ctx, "sp_GetAllCompanies", map[string]interface{}{})
+		result := exec.Execute(ctx, "GetAllCompanies", map[string]interface{}{})
 		if result.Error != nil {
-			t.Errorf("Execute failed: %v", result.Error)
+			t.Errorf("execute failed: %v", result.Error)
 		}
 		if result.RowsAffected <= 0 {
-			t.Error("Expected rows to be returned")
+			t.Error("expected rows to be returned")
 		}
 	})
 
 	// Test 2: Execute sp_CreateCompany (with parameters)
-	createResult := exec.Execute(ctx, "sp_CreateCompany", map[string]interface{}{
+	createResult := exec.Execute(ctx, "CreateCompany", map[string]interface{}{
 		"Name": "Test Corp",
 	})
 	if createResult.Error != nil {
 		t.Fatalf("CreateCompany failed: %v", createResult.Error)
 	}
 	if !createResult.LastInsertID.Valid {
-		t.Error("Expected LastInsertID to be valid")
+		t.Error("expected LastInsertID to be valid")
 	}
 	t.Logf("Created company with ID: %d", createResult.LastInsertID.Int64)
 
 	// Test 3: Execute sp_GetCompanyByID (with parameters)
-	getResult := exec.Execute(ctx, "sp_GetCompanyByID", map[string]interface{}{
+	getResult := exec.Execute(ctx, "GetCompanyByID", map[string]interface{}{
 		"CompanyID": createResult.LastInsertID.Int64,
 	})
 	if getResult.Error != nil {
@@ -82,7 +83,7 @@ func TestExecutor_Execute(t *testing.T) {
 	}
 
 	// Test 4: Execute sp_UpdateCompany (with parameters)
-	updateResult := exec.Execute(ctx, "sp_UpdateCompany", map[string]interface{}{
+	updateResult := exec.Execute(ctx, "UpdateCompany", map[string]interface{}{
 		"CompanyID": createResult.LastInsertID.Int64,
 		"Name":      "Updated Corp",
 	})
@@ -94,7 +95,7 @@ func TestExecutor_Execute(t *testing.T) {
 	}
 
 	// Test 5: Execute sp_DeleteCompany (with parameters)
-	deleteResult := exec.Execute(ctx, "sp_DeleteCompany", map[string]interface{}{
+	deleteResult := exec.Execute(ctx, "DeleteCompany", map[string]interface{}{
 		"CompanyID": createResult.LastInsertID.Int64,
 	})
 	if deleteResult.Error != nil {
@@ -106,7 +107,7 @@ func TestExecutor_Execute(t *testing.T) {
 
 	// Test 6: Execute non-existent procedure
 	t.Run("NonExistentProcedure", func(t *testing.T) {
-		result := exec.Execute(ctx, "sp_NonExistentProcedure", map[string]interface{}{})
+		result := exec.Execute(ctx, "NonExistentProcedure", map[string]interface{}{})
 		if result.Error == nil {
 			t.Error("Expected error for non-existent procedure")
 		}
@@ -129,15 +130,18 @@ func TestExecutor_Execute_LazyInitialization(t *testing.T) {
 	defer db.Close()
 
 	// Create executor without initializing registry
-	exec := NewExecutor(db, "src/company/sql", "company")
+	exec := NewExecutor(db)
+	// Clear registry for clean slate
+	exec.registry.ClearRegistry()
 
 	// Verify registry is empty initially
-	if len(exec.registry) != 0 {
-		t.Errorf("Expected empty registry, got %d entries", len(exec.registry))
+	registry_count := exec.registry.Count()
+	if registry_count != 0 {
+		t.Errorf("Expected empty registry, got %d entries", registry_count)
 	}
 
 	// Verify initialized is false
-	if exec.initialized {
+	if exec.registry.Initialized() {
 		t.Error("Expected initialized to be false")
 	}
 
@@ -146,7 +150,7 @@ func TestExecutor_Execute_LazyInitialization(t *testing.T) {
 	result := exec.Execute(ctx, "sp_GetAllCompanies", map[string]interface{}{})
 
 	// Verify registry was initialized
-	if !exec.initialized {
+	if !exec.registry.Initialized() {
 		t.Error("Expected initialized to be true after Execute")
 	}
 
@@ -171,7 +175,7 @@ func TestExecutor_Execute_ParamTypes(t *testing.T) {
 	defer db.Close()
 
 	// Create executor
-	exec := NewExecutor(db, "src/company/sql", "company")
+	exec := NewExecutor(db)
 
 	ctx := context.Background()
 
@@ -252,7 +256,7 @@ func TestExecutor_Execute_EmptyParams(t *testing.T) {
 	defer db.Close()
 
 	// Create executor
-	exec := NewExecutor(db, "src/company/sql", "company")
+	exec := NewExecutor(db)
 
 	ctx := context.Background()
 
@@ -284,7 +288,7 @@ func TestExecutor_Execute_ProcedureNotFound(t *testing.T) {
 	defer db.Close()
 
 	// Create executor
-	exec := NewExecutor(db, "src/company/sql", "company")
+	exec := NewExecutor(db)
 
 	ctx := context.Background()
 
@@ -317,7 +321,7 @@ func TestExecutor_Registry_BuildsCorrectly(t *testing.T) {
 	defer db.Close()
 
 	// Create executor
-	exec := NewExecutor(db, "src/company/sql", "company")
+	exec := NewExecutor(db)
 
 	// Check that expected procedures are in the registry
 	expectedProcedures := []string{
@@ -329,14 +333,26 @@ func TestExecutor_Registry_BuildsCorrectly(t *testing.T) {
 	}
 
 	for _, procName := range expectedProcedures {
-		if _, ok := exec.registry[procName]; !ok {
+		_, err := exec.registry.Get(procName)
+		if err != nil {
 			t.Errorf("Expected procedure '%s' in registry, not found", procName)
 		}
 	}
 
-	// Check that sp_ prefix is stripped
-	if _, ok := exec.registry["sp_CreateCompany"]; ok {
-		t.Error("Registry should not contain procedure with sp_ prefix")
+	// Check that expected procedures are in the registry
+	expectedProceduresPrefixed := []string{
+		"sp_CreateCompany",
+		"sp_DeleteCompany",
+		"sp_GetAllCompanies",
+		"sp_GetCompanyByID",
+		"sp_UpdateCompany",
+	}
+
+	for _, procName := range expectedProceduresPrefixed {
+		_, err := exec.registry.Get(procName)
+		if err != nil {
+			t.Errorf("Expected procedure '%s' in registry, not found", procName)
+		}
 	}
 }
 
@@ -356,7 +372,7 @@ func TestExecutor_Execute_WithSpecialCharacters(t *testing.T) {
 	defer db.Close()
 
 	// Create executor
-	exec := NewExecutor(db, "src/company/sql", "company")
+	exec := NewExecutor(db)
 
 	ctx := context.Background()
 
@@ -387,7 +403,7 @@ func TestExecutor_Execute_MultipleCalls(t *testing.T) {
 	defer db.Close()
 
 	// Create executor
-	exec := NewExecutor(db, "src/company/sql", "company")
+	exec := NewExecutor(db)
 
 	ctx := context.Background()
 

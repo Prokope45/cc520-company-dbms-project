@@ -1,2 +1,2 @@
 #! /bin/sh
-go run src/db/main.go rebuild
+go run src/company/db/main.go rebuild
