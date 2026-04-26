@@ -206,25 +206,10 @@ func (r *Rebuilder) createTables(ctx context.Context) error {
 
 // createProcedures creates all stored procedures
 func (r *Rebuilder) createProcedures(ctx context.Context) error {
-	proceduresDir := filepath.Join(r.baseDir, "Procedures", "company")
-	entries, err := os.ReadDir(proceduresDir)
-	if err != nil {
-		// If directory doesn't exist, just skip
-		if os.IsNotExist(err) {
-			return nil
-		}
-		return fmt.Errorf("failed to read procedures directory: %w", err)
-	}
-
-	for _, entry := range entries {
-		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".sql") {
-			continue
-		}
-
-		procPath := filepath.Join(proceduresDir, entry.Name())
-		procSQL, err := os.ReadFile(procPath)
+	for name, path := range r.registry.GetAll() {
+		procSQL, err := os.ReadFile(path)
 		if err != nil {
-			return fmt.Errorf("failed to read procedure SQL file %s: %w", entry.Name(), err)
+			return fmt.Errorf("failed to read procedure SQL file %s: %w", name, err)
 		}
 
 		// Split by GO since go-mssqldb doesn't support it natively
@@ -233,11 +218,11 @@ func (r *Rebuilder) createProcedures(ctx context.Context) error {
 			batch = strings.TrimSpace(batch)
 			if batch != "" {
 				if _, err := r.db.ExecContext(ctx, batch); err != nil {
-					return fmt.Errorf("failed to create procedure %s: %w", entry.Name(), err)
+					return fmt.Errorf("failed to create procedure %s: %w", name, err)
 				}
 			}
 		}
-		fmt.Printf("  Created procedure: %s\n", entry.Name())
+		fmt.Printf("  Created procedure: %s\n", name)
 	}
 	return nil
 }
