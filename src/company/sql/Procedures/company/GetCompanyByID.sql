@@ -4,7 +4,7 @@ AS
 BEGIN
     SELECT 
         CompanyID,
-        Name,
+        [Name],
         CreatedDate
     FROM [Org].[Company]
     WHERE CompanyID = @CompanyID
