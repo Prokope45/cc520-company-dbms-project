@@ -22,7 +22,6 @@ type ProcedureRegistry map[string]string
 // Registry manages the procedure registry with lazy initialization
 type Registry struct {
 	baseDir     string
-	procedures  []string // list of procedure directories to search
 	registry    ProcedureRegistry
 	initialized bool
 	once        sync.Once
@@ -35,11 +34,9 @@ type Registry struct {
 func NewRegistry() *Registry {
 	cwd := "/workspaces/cc520-company-dbms-project"
 	sqlPath := filepath.Join(cwd, "src", "company", "sql", "Procedures")
-	procedureDirs := []string{"company"}
 
 	return &Registry{
 		baseDir:     sqlPath,
-		procedures:  procedureDirs,
 		registry:    make(ProcedureRegistry),
 		initialized: false,
 	}
@@ -56,8 +53,16 @@ func (r *Registry) init() error {
 
 // buildRegistry scans procedure directories and builds the registry
 func (r *Registry) buildRegistry() error {
-	for _, procDir := range r.procedures {
-		procPath := filepath.Join(r.baseDir, procDir)
+	folders, err := os.ReadDir(r.baseDir)
+	if err != nil {
+		return fmt.Errorf("failed to read procedure directories: %w", err)
+	}
+
+	for _, folder := range folders {
+		if !folder.IsDir() {
+			continue
+		}
+		procPath := filepath.Join(r.baseDir, folder.Name())
 
 		entries, err := os.ReadDir(procPath)
 		if err != nil {
