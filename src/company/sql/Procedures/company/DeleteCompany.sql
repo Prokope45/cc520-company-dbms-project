@@ -1,8 +1,8 @@
-CREATE PROCEDURE [sp_DeleteCompany]
+CREATE PROCEDURE [Org].[sp_DeleteCompany]
     @CompanyID INT
 AS
 BEGIN
-    DELETE FROM [Company]
+    DELETE FROM [Org].[Company]
     WHERE CompanyID = @CompanyID
 END
 GO

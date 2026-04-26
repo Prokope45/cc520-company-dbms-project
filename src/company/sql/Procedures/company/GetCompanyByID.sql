@@ -1,4 +1,4 @@
-CREATE PROCEDURE [sp_GetCompanyByID]
+CREATE PROCEDURE [Org].[sp_GetCompanyByID]
     @CompanyID INT
 AS
 BEGIN
@@ -6,7 +6,7 @@ BEGIN
         CompanyID,
         Name,
         CreatedDate
-    FROM [Company]
+    FROM [Org].[Company]
     WHERE CompanyID = @CompanyID
 END
 GO

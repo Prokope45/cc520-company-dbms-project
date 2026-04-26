@@ -1,10 +1,10 @@
-CREATE PROCEDURE [sp_GetAllCompanies]
+CREATE PROCEDURE [Org].[sp_GetAllCompanies]
 AS
 BEGIN
     SELECT 
         CompanyID,
         Name,
         CreatedDate
-    FROM [Company]
+    FROM [Org].[Company]
 END
 GO

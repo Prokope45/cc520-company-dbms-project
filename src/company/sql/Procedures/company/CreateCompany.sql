@@ -1,8 +1,8 @@
-CREATE PROCEDURE [sp_CreateCompany]
+CREATE PROCEDURE [Org].[sp_CreateCompany]
     @Name NVARCHAR(255)
 AS
 BEGIN
-    INSERT INTO [Company] ([Name])
+    INSERT INTO [Org].[Company] ([Name])
     VALUES (@Name)
     
     SELECT SCOPE_IDENTITY() AS CompanyID
