@@ -63,9 +63,19 @@ func main() {
 	// Create router with gorilla/mux
 	r := mux.NewRouter()
 
-	// API routes
+	// API routes - Companies
 	r.HandleFunc("/companies", companiesHandler.GetAll).Methods(http.MethodGet)
+	r.HandleFunc("/companies", companiesHandler.Create).Methods(http.MethodPost)
+	r.HandleFunc("/companies/{id}", companiesHandler.GetByID).Methods(http.MethodGet)
+	r.HandleFunc("/companies/{id}", companiesHandler.Update).Methods(http.MethodPut)
+	r.HandleFunc("/companies/{id}", companiesHandler.Delete).Methods(http.MethodDelete)
+
+	// API routes - Departments
 	r.HandleFunc("/departments", departmentsHandler.GetAll).Methods(http.MethodGet)
+	r.HandleFunc("/departments", departmentsHandler.Create).Methods(http.MethodPost)
+	r.HandleFunc("/departments/{id}", departmentsHandler.GetByID).Methods(http.MethodGet)
+	r.HandleFunc("/departments/{id}", departmentsHandler.Update).Methods(http.MethodPut)
+	r.HandleFunc("/departments/{id}", departmentsHandler.Delete).Methods(http.MethodDelete)
 
 	// Create server
 	server := &http.Server{

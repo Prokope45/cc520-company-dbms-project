@@ -84,11 +84,15 @@
       "additionalVersions": "9.0"
       // Optional: side-by-side SDKs
     },
-    //"ghcr.io/devcontainers/features/docker-outside-of-docker": {}
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "20"
+    }
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [
-    1433
+    1433,
+    8080,
+    3000
   ],
   "remoteEnv": {
     "SQL_SECRETS": "{\"credentials\":[{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|db:CC520|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:CC520|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|db:WideWorldImporters|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:WideWorldImporters|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|user:SA\",\"password\":\"sup3rs3cur3P@ssword\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:master|user:SA\",\"password\":\"sup3rs3cur3P@ssword\"}]}"

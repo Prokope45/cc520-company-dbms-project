@@ -5,6 +5,7 @@ reports/
 
 *.DS_Store
 # Logs
+__debug*
 logs
 *.log
 npm-debug.log*
