@@ -1,104 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Management</title>
-    
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Company Management</h1>
-        
-        <!-- Companies Section -->
-        <div class="section">
-            <h2>Companies</h2>
-            <button class="btn btn-primary" id="addCompanyBtn">+ Add Company</button>
-            <table id="companiesTable" class="display">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Created Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        
-        <!-- Departments Section -->
-        <div class="section">
-            <h2>Departments</h2>
-            <button class="btn btn-primary" id="addDepartmentBtn">+ Add Department</button>
-            <table id="departmentsTable" class="display">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Company ID</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        
-        <!-- Modal for Add/Edit -->
-        <div id="modal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2 id="modalTitle">Add Record</h2>
-                <form id="crudForm">
-                    <input type="hidden" id="recordId">
-                    <div class="form-group">
-                        <label for="companyName">Company Name:</label>
-                        <input type="text" id="companyName" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="deptName">Department Name:</label>
-                        <input type="text" id="deptName" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="deptDescription">Department Description:</label>
-                        <textarea id="deptDescription" name="description"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    
-    <!-- Custom JS -->
-    <script src="js/app.js"></script>
-    
-    <script>
-        // Modal functionality
-        var modal = document.getElementById("modal");
-        var span = document.getElementsByClassName("close")[0];
-        
-        span.onclick = function() {
-            modal.style.display = "none";
-            document.getElementById("crudForm").reset();
-        }
-        
-        modal.style.display = "none";
-    </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontend_temp</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
