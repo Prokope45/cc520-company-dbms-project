@@ -6,7 +6,7 @@ BEGIN
         [FirstName] NVARCHAR(100) NOT NULL,
         [LastName] NVARCHAR(100) NOT NULL,
         [Email] NVARCHAR(255) NOT NULL UNIQUE,
-        [Phone] NVARCHAR(50),
+        [Phone] NVARCHAR(50) Null,
         CONSTRAINT [FK_Person_Address] FOREIGN KEY ([AddressID])
             REFERENCES Org.[Address]([AddressID])
             ON DELETE CASCADE,
