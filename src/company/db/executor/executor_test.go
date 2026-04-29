@@ -57,6 +57,10 @@ func TestExecutor_Execute(t *testing.T) {
 		if result.RowsAffected <= 0 {
 			t.Error("expected rows to be returned")
 		}
+		// Verify rows are populated
+		if len(result.Rows) == 0 {
+			t.Error("expected rows to be populated")
+		}
 	})
 
 	// Test 2: Execute sp_CreateCompany (with parameters)
@@ -70,6 +74,10 @@ func TestExecutor_Execute(t *testing.T) {
 		t.Error("expected LastInsertID to be valid")
 	}
 	t.Logf("Created company with ID: %d", createResult.LastInsertID.Int64)
+	// Verify rows are populated
+	if len(createResult.Rows) == 0 {
+		t.Error("expected rows to be populated")
+	}
 
 	// Test 3: Execute sp_GetCompanyByID (with parameters)
 	getResult := exec.Execute(ctx, "GetCompanyByID", map[string]interface{}{
@@ -80,6 +88,10 @@ func TestExecutor_Execute(t *testing.T) {
 	}
 	if getResult.RowsAffected != 1 {
 		t.Errorf("Expected 1 row, got %d", getResult.RowsAffected)
+	}
+	// Verify rows are populated
+	if len(getResult.Rows) != 1 {
+		t.Errorf("Expected 1 row in results, got %d", len(getResult.Rows))
 	}
 
 	// Test 4: Execute sp_UpdateCompany (with parameters)

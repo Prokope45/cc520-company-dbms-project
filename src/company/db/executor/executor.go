@@ -19,6 +19,7 @@ import (
 type Result struct {
 	RowsAffected int64
 	LastInsertID sql.NullInt64
+	Rows         []map[string]interface{}
 	Error        error
 }
 
@@ -76,35 +77,48 @@ func (e *Executor) executeWithParams(ctx context.Context, procName string, param
 
 		var rowsAffected int64 = 0
 		var lastInsertID sql.NullInt64
+		var rowsData []map[string]interface{}
 
-		if rows.Next() {
-			var val interface{}
-			if err := rows.Scan(&val); err == nil {
-				if val != nil {
-					switch v := val.(type) {
-					case int64:
-						lastInsertID = sql.NullInt64{Int64: v, Valid: true}
-						rowsAffected = 1
-					case int32:
-						lastInsertID = sql.NullInt64{Int64: int64(v), Valid: true}
-						rowsAffected = 1
-					case []byte:
-						var parsed int64
-						fmt.Sscanf(string(v), "%d", &parsed)
-						lastInsertID = sql.NullInt64{Int64: parsed, Valid: true}
-						rowsAffected = 1
-					default:
-						rowsAffected = 1
-					}
-				} else {
-					rowsAffected = 1
-				}
-			} else {
-				rowsAffected = 1
+		for rows.Next() {
+			cols, err := rows.Columns()
+			if err != nil {
+				return Result{Error: fmt.Errorf("failed to get columns: %w", err)}
 			}
 
-			for rows.Next() {
-				rowsAffected++
+			rowData := make(map[string]interface{}, len(cols))
+			values := make([]interface{}, len(cols))
+			valuePtrs := make([]interface{}, len(cols))
+
+			for i := range cols {
+				valuePtrs[i] = &values[i]
+			}
+
+			if err := rows.Scan(valuePtrs...); err != nil {
+				return Result{Error: fmt.Errorf("failed to scan row: %w", err)}
+			}
+
+			for i, col := range cols {
+				if val, ok := values[i].([]byte); ok {
+					rowData[col] = string(val)
+				} else {
+					rowData[col] = values[i]
+				}
+			}
+
+			rowsData = append(rowsData, rowData)
+			rowsAffected++
+
+			// Check for identity column (first column is typically the identity)
+			if len(cols) > 0 {
+				if val, ok := values[0].(int64); ok {
+					lastInsertID = sql.NullInt64{Int64: val, Valid: true}
+				} else if val, ok := values[0].(int32); ok {
+					lastInsertID = sql.NullInt64{Int64: int64(val), Valid: true}
+				} else if val, ok := values[0].([]byte); ok {
+					var parsed int64
+					fmt.Sscanf(string(val), "%d", &parsed)
+					lastInsertID = sql.NullInt64{Int64: parsed, Valid: true}
+				}
 			}
 		}
 
@@ -115,6 +129,7 @@ func (e *Executor) executeWithParams(ctx context.Context, procName string, param
 		return Result{
 			RowsAffected: rowsAffected,
 			LastInsertID: lastInsertID,
+			Rows:         rowsData,
 		}
 	}
 
