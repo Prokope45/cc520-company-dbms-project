@@ -2,6 +2,7 @@ __pycache__/
 .tox
 reports/
 .coverage
+.opencode
 
 *.DS_Store
 # Logs

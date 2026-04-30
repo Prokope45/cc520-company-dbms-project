@@ -5,9 +5,6 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "roo-cline.apiProvider": "lm-studio",
-        "roo-cline.lmStudioBaseUrl": "http://host.docker.internal:1234",
-        "roo-cline.model": "qwen/qwen3.5-9b",
         "mssql.connections": [
           {
             "profileName": "wide-world-importers",
@@ -69,14 +66,14 @@
         "yzhang.markdown-all-in-one",
         "ms-mssql.mssql",
         "ms-toolsai.datawrangler",
-        "bierner.markdown-mermaid",
-        "rooveterinaryinc.roo-cline"
+        "bierner.markdown-mermaid"
       ]
     }
   },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   // Features to add to the dev container. More info: https://containers.dev/features.  
   "features": {
+    "ghcr.io/danzilberdan/devcontainers/opencode:0": {},
     "ghcr.io/devcontainers/features/dotnet:2": {
       "version": "10.0",
       // Installs .NET 10 SDK
@@ -88,6 +85,13 @@
       "version": "20"
     }
   },
+  "mounts": [
+    {
+      "source": "${localWorkspaceFolder}/.opencode/auth.json",
+      "target": "/mnt/opencode-auth.json",
+      "type": "bind"
+    }
+  ],
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [
     1433,
