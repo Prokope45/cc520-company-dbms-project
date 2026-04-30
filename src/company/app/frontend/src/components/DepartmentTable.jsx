@@ -7,6 +7,7 @@ const DepartmentTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDepartment, setEditingDepartment] = useState(null);
   const [formData, setFormData] = useState({ company_id: '', name: '', description: '' });
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     fetchDepartments();
@@ -16,8 +17,10 @@ const DepartmentTable = () => {
     try {
       const response = await departmentAPI.getAll();
       setDepartments(response.data);
+      setErrorMessage('');
     } catch (error) {
       console.error('Error fetching departments:', error);
+      setErrorMessage(error.response?.data?.error || 'Failed to fetch departments');
     }
   };
 
@@ -26,8 +29,10 @@ const DepartmentTable = () => {
       try {
         await departmentAPI.delete(id);
         fetchDepartments();
+        setErrorMessage('');
       } catch (error) {
         console.error('Error deleting department:', error);
+        setErrorMessage(error.response?.data?.error || 'Failed to delete department');
       }
     }
   };
@@ -50,6 +55,7 @@ const DepartmentTable = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     try {
       // Convert company_id to number
       const payload = { ...formData, company_id: parseInt(formData.company_id, 10) };
@@ -63,13 +69,21 @@ const DepartmentTable = () => {
       fetchDepartments();
     } catch (error) {
       console.error('Error saving department:', error);
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to save department';
+      setErrorMessage(errorMessage);
     }
   };
   return (
     <div className="section">
       <h2>Departments</h2>
       <button className="btn btn-primary" onClick={handleAdd}>+ Add Department</button>
-      
+
+      {errorMessage && (
+        <div className="alert alert-danger" style={{ marginTop: '10px', padding: '10px', backgroundColor: '#f8d7da', border: '1px solid #f5c6cb', borderRadius: '4px' }}>
+          {errorMessage}
+        </div>
+      )}
+
       <table className="display" style={{ width: '100%', marginTop: '15px' }}>
         <thead>
           <tr>
@@ -89,14 +103,14 @@ const DepartmentTable = () => {
               <td className="table-cell-text">{dept.description}</td>
               <td className="table-cell-actions">
                 <button className="btn btn-primary" onClick={() => handleEdit(dept)} style={{ marginRight: '5px' }}>Edit</button>
-                <button className="btn btn-secondary" onClick={() => handleDelete(dept.id)}>Delete</button>
+                <button className="btn btn-secondary" onClick={() => handleDelete(dept.department_id)}>Delete</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <Modal 
+      <Modal
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
         title={editingDepartment ? "Edit Department" : "Add Department"}

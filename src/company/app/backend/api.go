@@ -179,8 +179,8 @@ func (h *DepartmentsHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 // GetByID handles GET /departments/{id}
 func (h *DepartmentsHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	vars := r.URL.Query()
-	idStr := vars.Get("id")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
 	if idStr == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
 		return
@@ -223,8 +223,8 @@ func (h *DepartmentsHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 // Update handles PUT /departments/{id}
 func (h *DepartmentsHandler) Update(w http.ResponseWriter, r *http.Request) {
-	vars := r.URL.Query()
-	idStr := vars.Get("id")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
 	if idStr == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
 		return
@@ -255,8 +255,8 @@ func (h *DepartmentsHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 // Delete handles DELETE /departments/{id}
 func (h *DepartmentsHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	vars := r.URL.Query()
-	idStr := vars.Get("id")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
 	if idStr == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
 		return

@@ -73,9 +73,9 @@ func (r *DepartmentRepository) GetDepartmentByID(ctx context.Context, id int64) 
 // CreateDepartment creates a new department
 func (r *DepartmentRepository) CreateDepartment(ctx context.Context, department models.Department) (*models.Department, error) {
 	result := r.executor.Execute(ctx, "CreateDepartment", map[string]any{
-		"company_id":  department.CompanyID,
-		"name":        department.Name,
-		"description": department.Description,
+		"CompanyID":   department.CompanyID,
+		"Name":        department.Name,
+		"Description": department.Description,
 	})
 	if result.Error != nil {
 		return nil, result.Error
@@ -89,9 +89,9 @@ func (r *DepartmentRepository) CreateDepartment(ctx context.Context, department 
 // UpdateDepartment updates an existing department
 func (r *DepartmentRepository) UpdateDepartment(ctx context.Context, department models.Department) (*models.Department, error) {
 	result := r.executor.Execute(ctx, "UpdateDepartment", map[string]any{
-		"id":          department.DepartmentID,
-		"name":        department.Name,
-		"description": department.Description,
+		"DepartmentID": department.DepartmentID,
+		"Name":         department.Name,
+		"Description":  department.Description,
 	})
 	if result.Error != nil {
 		return nil, result.Error
@@ -103,7 +103,7 @@ func (r *DepartmentRepository) UpdateDepartment(ctx context.Context, department 
 // DeleteDepartment deletes a department by ID
 func (r *DepartmentRepository) DeleteDepartment(ctx context.Context, id int64) error {
 	result := r.executor.Execute(ctx, "DeleteDepartment", map[string]any{
-		"id": id,
+		"DepartmentID": id,
 	})
 	if result.Error != nil {
 		return result.Error
