@@ -14,6 +14,8 @@ import (
 
 	"cc520-company-dbms-project/src/company/app/backend/models"
 	"cc520-company-dbms-project/src/company/app/backend/repositories"
+
+	"github.com/gorilla/mux"
 )
 
 // API holds the HTTP API handlers and repositories
@@ -55,8 +57,8 @@ func (h *CompaniesHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 // GetByID handles GET /companies/{id}
 func (h *CompaniesHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	vars := r.URL.Query()
-	idStr := vars.Get("id")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
 	if idStr == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
 		return
@@ -99,8 +101,8 @@ func (h *CompaniesHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 // Update handles PUT /companies/{id}
 func (h *CompaniesHandler) Update(w http.ResponseWriter, r *http.Request) {
-	vars := r.URL.Query()
-	idStr := vars.Get("id")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
 	if idStr == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
 		return
@@ -131,8 +133,8 @@ func (h *CompaniesHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 // Delete handles DELETE /companies/{id}
 func (h *CompaniesHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	vars := r.URL.Query()
-	idStr := vars.Get("id")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
 	if idStr == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
 		return

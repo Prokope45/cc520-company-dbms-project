@@ -7,6 +7,7 @@ const CompanyTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState(null);
   const [formData, setFormData] = useState({ name: '' });
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     fetchCompanies();
@@ -16,8 +17,10 @@ const CompanyTable = () => {
     try {
       const response = await companyAPI.getAll();
       setCompanies(response.data);
+      setErrorMessage('');
     } catch (error) {
       console.error('Error fetching companies:', error);
+      setErrorMessage(error.response?.data?.error || 'Failed to fetch companies');
     }
   };
 
@@ -26,29 +29,34 @@ const CompanyTable = () => {
       try {
         await companyAPI.delete(id);
         fetchCompanies();
+        setErrorMessage('');
       } catch (error) {
         console.error('Error deleting company:', error);
+        setErrorMessage(error.response?.data?.error || 'Failed to delete company');
       }
     }
   };
 
   const handleEdit = (company) => {
     setEditingCompany(company);
-    setFormData({ name: company.name });
+    setFormData({ id: company.company_id, name: company.name });
     setIsModalOpen(true);
+    setErrorMessage('');
   };
 
   const handleAdd = () => {
     setEditingCompany(null);
     setFormData({ name: '' });
     setIsModalOpen(true);
+    setErrorMessage('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     try {
       if (editingCompany) {
-        await companyAPI.update(editingCompany.id, formData);
+        await companyAPI.update(editingCompany.company_id, formData);
       } else {
         await companyAPI.create(formData);
       }
@@ -56,6 +64,8 @@ const CompanyTable = () => {
       fetchCompanies();
     } catch (error) {
       console.error('Error saving company:', error);
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to save company';
+      setErrorMessage(errorMessage);
     }
   };
 
@@ -63,6 +73,12 @@ const CompanyTable = () => {
     <div className="section">
       <h2>Companies</h2>
       <button className="btn btn-primary" onClick={handleAdd}>+ Add Company</button>
+      
+      {errorMessage && (
+        <div className="alert alert-danger" style={{ marginTop: '10px', padding: '10px', backgroundColor: '#f8d7da', border: '1px solid #f5c6cb', borderRadius: '4px' }}>
+          {errorMessage}
+        </div>
+      )}
       
       <table className="display" style={{ width: '100%', marginTop: '15px' }}>
         <thead>
@@ -75,34 +91,34 @@ const CompanyTable = () => {
         </thead>
         <tbody>
           {companies.map(company => (
-            <tr key={company.id}>
-              <td>{company.id}</td>
+            <tr key={company.company_id}>
+              <td>{company.company_id}</td>
               <td>{company.name}</td>
-              <td>{new Date(company.createdAt).toLocaleString()}</td>
+              <td>{new Date(company.createdDate).toLocaleString()}</td>
               <td>
                 <button className="btn btn-primary" onClick={() => handleEdit(company)} style={{ marginRight: '5px' }}>Edit</button>
-                <button className="btn btn-secondary" onClick={() => handleDelete(company.id)}>Delete</button>
+                <button className="btn btn-secondary" onClick={() => handleDelete(company.company_id)}>Delete</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <Modal 
-        isOpen={isModalOpen} 
+      <Modal
+        isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={editingCompany ? "Edit Company" : "Add Company"}
       >
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="companyName">Company Name:</label>
-            <input 
-              type="text" 
-              id="companyName" 
-              name="name" 
-              required 
+            <input
+              type="text"
+              id="companyName"
+              name="name"
+              required
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) => setFormData({ name: e.target.value })}
             />
           </div>
           <button type="submit" className="btn btn-primary">Save</button>

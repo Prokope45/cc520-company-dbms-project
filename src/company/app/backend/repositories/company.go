@@ -72,7 +72,7 @@ func (r *CompanyRepository) GetCompanyByID(ctx context.Context, id int64) (*mode
 // CreateCompany creates a new company
 func (r *CompanyRepository) CreateCompany(ctx context.Context, company models.Company) (*models.Company, error) {
 	result := r.executor.Execute(ctx, "CreateCompany", map[string]any{
-		"name": company.Name,
+		"Name": company.Name,
 	})
 	if result.Error != nil {
 		return nil, result.Error
@@ -86,9 +86,8 @@ func (r *CompanyRepository) CreateCompany(ctx context.Context, company models.Co
 // UpdateCompany updates an existing company
 func (r *CompanyRepository) UpdateCompany(ctx context.Context, company models.Company) (*models.Company, error) {
 	result := r.executor.Execute(ctx, "UpdateCompany", map[string]any{
-		"id":      company.CompanyID,
-		"name":    company.Name,
-		"created": company.CreatedDate,
+		"CompanyID": company.CompanyID,
+		"Name":      company.Name,
 	})
 	if result.Error != nil {
 		return nil, result.Error
@@ -100,7 +99,7 @@ func (r *CompanyRepository) UpdateCompany(ctx context.Context, company models.Co
 // DeleteCompany deletes a company by ID
 func (r *CompanyRepository) DeleteCompany(ctx context.Context, id int64) error {
 	result := r.executor.Execute(ctx, "DeleteCompany", map[string]any{
-		"id": id,
+		"CompanyID": id,
 	})
 	if result.Error != nil {
 		return result.Error
@@ -115,11 +114,11 @@ func (r *CompanyRepository) parseDateTime(val interface{}) string {
 	case string:
 		return v
 	case time.Time:
-		return v.Format("2006-01-02")
+		return v.Format("2006-01-02T15:04:05")
 	case int64:
-		return time.Unix(v, 0).Format("2006-01-02")
+		return time.Unix(v, 0).Format("2006-01-02T15:04:05")
 	case int32:
-		return time.Unix(int64(v), 0).Format("2006-01-02")
+		return time.Unix(int64(v), 0).Format("2006-01-02T15:04:05")
 	default:
 		return ""
 	}
