@@ -92,10 +92,10 @@ const CompanyTable = () => {
         <tbody>
           {companies.map(company => (
             <tr key={company.company_id}>
-              <td>{company.company_id}</td>
-              <td>{company.name}</td>
-              <td>{new Date(company.createdDate).toLocaleString()}</td>
-              <td>
+              <td className="table-cell-id">{company.company_id}</td>
+              <td className="table-cell-text">{company.name}</td>
+              <td className="table-cell-text">{new Date(company.createdDate).toLocaleString()}</td>
+              <td className="table-cell-actions">
                 <button className="btn btn-primary" onClick={() => handleEdit(company)} style={{ marginRight: '5px' }}>Edit</button>
                 <button className="btn btn-secondary" onClick={() => handleDelete(company.company_id)}>Delete</button>
               </td>

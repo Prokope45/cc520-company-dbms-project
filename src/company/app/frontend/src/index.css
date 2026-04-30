@@ -136,7 +136,39 @@ h1 {
     resize: vertical;
     min-height: 80px;
 }
-
 .modal .btn {
-    margin-right: 10px;
+  margin-right: 10px;
+}
+
+/* Table cell alignment styles */
+.table-cell-id {
+  text-align: left;
+  font-weight: 500;
+}
+
+.table-cell-number {
+  text-align: left;
+  font-weight: 500;
+}
+
+.table-cell-text {
+  text-align: left;
+}
+
+.table-cell-actions {
+  text-align: center;
+}
+
+/* Table header styling */
+table th {
+  text-align: left !important;
+  font-weight: 600;
+  padding: 12px 8px;
+  border-bottom: 2px solid var(--border);
+}
+
+/* Optional: Add vertical alignment */
+table td, table th {
+  vertical-align: middle;
+  padding: 10px 8px;
 }

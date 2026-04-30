@@ -65,7 +65,6 @@ const DepartmentTable = () => {
       console.error('Error saving department:', error);
     }
   };
-
   return (
     <div className="section">
       <h2>Departments</h2>
@@ -83,12 +82,12 @@ const DepartmentTable = () => {
         </thead>
         <tbody>
           {departments.map(dept => (
-            <tr key={dept.id}>
-              <td>{dept.id}</td>
-              <td>{dept.company_id}</td>
-              <td>{dept.name}</td>
-              <td>{dept.description}</td>
-              <td>
+            <tr key={dept.department_id}>
+              <td className="table-cell-id">{dept.department_id}</td>
+              <td className="table-cell-number">{dept.company_id}</td>
+              <td className="table-cell-text">{dept.name}</td>
+              <td className="table-cell-text">{dept.description}</td>
+              <td className="table-cell-actions">
                 <button className="btn btn-primary" onClick={() => handleEdit(dept)} style={{ marginRight: '5px' }}>Edit</button>
                 <button className="btn btn-secondary" onClick={() => handleDelete(dept.id)}>Delete</button>
               </td>
