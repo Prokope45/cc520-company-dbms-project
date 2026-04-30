@@ -1,6 +1,6 @@
 IF OBJECT_ID(N'Org.HourlyEmployee') IS NULL
 BEGIN
-    CREATE TABLE Org.[HourlyEmployee] (
+    CREATE TABLE [Org].[HourlyEmployee] (
         [EmployeeID] INT NOT NULL PRIMARY KEY,
         [HourlyPay] DECIMAL(18, 2) NOT NULL,
         [MaxHoursPerWeek] INT NULL,

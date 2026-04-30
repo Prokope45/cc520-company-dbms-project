@@ -1,6 +1,6 @@
 IF OBJECT_ID(N'Org.DepEmpRole') IS NULL
 BEGIN
-    CREATE TABLE Org.[DepEmpRole]
+    CREATE TABLE [Org].[DepEmpRole]
     (
         [RoleID] INT NOT NULL,
         [DepartmentID] INT NOT NULL,

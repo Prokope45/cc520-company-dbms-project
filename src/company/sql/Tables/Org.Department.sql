@@ -1,6 +1,6 @@
 IF OBJECT_ID(N'Org.Department') IS NULL
 BEGIN
-    CREATE TABLE Org.Department
+    CREATE TABLE [Org].Department
     (
         [DepartmentID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
         [CompanyID] INT NOT NULL,

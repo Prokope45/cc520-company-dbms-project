@@ -1,6 +1,6 @@
 IF OBJECT_ID(N'Org.Salary') IS NULL
 BEGIN
-    CREATE TABLE Org.[Salary] (
+    CREATE TABLE [Org].[Salary] (
         [SalaryID] INT NOT NULL PRIMARY KEY,
         [BaseSalary] DECIMAL(18, 2) NOT NULL,
         [Bonus] DECIMAL(18, 2) DEFAULT 0.00,

@@ -1,6 +1,6 @@
 IF OBJECT_ID(N'Org.EmployeeType') IS NULL
 BEGIN
-    CREATE TABLE Org.[EmployeeType]
+    CREATE TABLE [Org].[EmployeeType]
     (
         [EmployeeTypeID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
         [Name] NVARCHAR(50) NOT NULL DEFAULT ('Salary') UNIQUE,

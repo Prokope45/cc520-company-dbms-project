@@ -1,6 +1,6 @@
 IF OBJECT_ID(N'Org.Role') IS NULL
 BEGIN
-    CREATE TABLE Org.[Role] (
+    CREATE TABLE [Org].[Role] (
         [RoleID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
         [Name] NVARCHAR(100) NOT NULL UNIQUE,
         [Description] NVARCHAR(255),

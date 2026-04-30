@@ -1,6 +1,6 @@
 IF OBJECT_ID(N'Org.Person') IS NULL
 BEGIN
-    CREATE TABLE Org.[Person] (
+    CREATE TABLE [Org].[Person] (
         [PersonID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
         [AddressID] INT NOT NULL,
         [FirstName] NVARCHAR(100) NOT NULL,

@@ -1,6 +1,6 @@
 IF OBJECT_ID(N'Org.SalaryEmployee') IS NULL
 BEGIN
-    CREATE TABLE Org.[SalaryEmployee] (
+    CREATE TABLE [Org].[SalaryEmployee] (
         [EmployeeID] INT NOT NULL PRIMARY KEY,
         [PaidTimeOffHours] INT NOT NULL,
         [SickHours] INT NOT NULL,

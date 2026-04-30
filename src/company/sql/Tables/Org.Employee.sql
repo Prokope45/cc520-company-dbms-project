@@ -1,6 +1,6 @@
 IF OBJECT_ID(N'Org.Employee') IS NULL
 BEGIN
-    CREATE TABLE Org.[Employee]
+    CREATE TABLE [Org].[Employee]
     (
         [EmployeeID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
         [ManagerID] INT NULL,
