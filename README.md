@@ -110,6 +110,12 @@ graph TD
     RB -->|executes SQL scripts| DB
 ```
 
+## Database Design
+
+The following ERD was used for building the database:
+
+![](jpaubel-cc520-project-ERD.drawio.png)
+
 ## Getting Started
 
 Follow these steps to set up and run the full stack application.
