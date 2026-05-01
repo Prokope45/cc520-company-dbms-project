@@ -164,6 +164,49 @@ Start both the Go Backend API and the React Frontend development servers concurr
 
 Navigate to the Frontend App URL in your web browser to interact with the Company Management Database System.
 
+## OpenCode Setup
+
+Before opencode can be used, you must have OpenCode installed on your host machine. If it is installed,
+then you need to have a symlink that points your auth.json to the project root `.opencode` folder.
+To generate the `auth.json` file, run `opencode auth login` and register a provider with an API key.
+
+```sh
+# In project root:
+mkdir .opencode
+cd .opencode && ln ~/.local/share/opencode/auth.json
+```
+
+See this [blog](https://danz.blog/blog/opencode-in-devcontainers) for more details.
+
+If you want to use a local model, add an `opencode.json` file into `.opencode/`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "edit": "ask",
+    "bash": "ask",
+    "webfetch": "allow"
+  },  
+  "provider": {
+    "lmstudio": {
+      "name": "LM Studio (local)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://host.docker.internal:1234/v1"
+      },
+      "models": {
+        "openai/gpt-oss-20b": {
+          "name": "gpt-oss-20b",
+          "thinking": true
+        }
+      }
+    }
+  }
+} 
+```
+
+
 ## Disclaimer on Security
 
 This application does not include any management of database user roles or user permissions through the web application. In a real-world setting, these would be included. Security was not considered for this example to simplify the implementation to showcase how to run queries and retrieve results from a database.
