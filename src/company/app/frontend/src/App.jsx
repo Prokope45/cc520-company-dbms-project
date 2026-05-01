@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CompanyTable from './components/CompanyTable';
 import DepartmentTable from './components/DepartmentTable';
+import EmployeeTable from './components/EmployeeTable';
 import './App.css';
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
       <h1>Company Management</h1>
       <CompanyTable />
       <DepartmentTable />
+      <EmployeeTable />
     </div>
   );
 }

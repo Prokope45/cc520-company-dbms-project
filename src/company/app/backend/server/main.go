@@ -56,10 +56,12 @@ func main() {
 	// Create repositories
 	companyRepo := repositories.NewCompanyRepository(executor)
 	deptRepo := repositories.NewDepartmentRepository(executor)
+	employeeRepo := repositories.NewEmployeeRepository(executor)
 
 	// Create handlers
 	companiesHandler := api.NewCompanyHandler(companyRepo)
 	departmentsHandler := api.NewDepartmentsHandler(deptRepo)
+	employeesHandler := api.NewEmployeesHandler(employeeRepo)
 
 	// Create router with gorilla/mux
 	r := mux.NewRouter()
@@ -77,6 +79,13 @@ func main() {
 	r.HandleFunc("/departments/{id}", departmentsHandler.GetByID).Methods(http.MethodGet)
 	r.HandleFunc("/departments/{id}", departmentsHandler.Update).Methods(http.MethodPut)
 	r.HandleFunc("/departments/{id}", departmentsHandler.Delete).Methods(http.MethodDelete)
+
+	// API routes - Employees
+	r.HandleFunc("/employees", employeesHandler.GetAll).Methods(http.MethodGet)
+	r.HandleFunc("/employees", employeesHandler.Create).Methods(http.MethodPost)
+	r.HandleFunc("/employees/{id}", employeesHandler.GetByID).Methods(http.MethodGet)
+	r.HandleFunc("/employees/{id}", employeesHandler.Update).Methods(http.MethodPut)
+	r.HandleFunc("/employees/{id}", employeesHandler.Delete).Methods(http.MethodDelete)
 
 	// Create server
 	server := &http.Server{

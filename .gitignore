@@ -3,6 +3,7 @@ __pycache__/
 reports/
 .coverage
 .opencode
+*_bin
 
 *.DS_Store
 # Logs

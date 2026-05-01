@@ -1,4 +1,9 @@
 // Package models defines the data structures for the company application
+// Authors:
+// 	- Jared Paubel
+//  - OpenCode agent - local qwen/qwen3.5-9b
+// Percentage written by Agent: 95%
+
 package models
 
 // Department represents a department in the database

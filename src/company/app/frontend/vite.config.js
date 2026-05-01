@@ -15,6 +15,10 @@ export default defineConfig({
       '/departments': {
         target: 'http://localhost:8080',
         changeOrigin: true,
+      },
+      '/employees': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
       }
     }
   }
