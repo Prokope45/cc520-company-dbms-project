@@ -16,8 +16,9 @@ import (
 	"syscall"
 	"time"
 
-	"cc520-company-dbms-project/src/company/app/backend"
+	"cc520-company-dbms-project/src/company/app/backend/api"
 	"cc520-company-dbms-project/src/company/app/backend/repositories"
+
 	"cc520-company-dbms-project/src/company/db/executor"
 
 	"github.com/gorilla/mux"
@@ -57,8 +58,8 @@ func main() {
 	deptRepo := repositories.NewDepartmentRepository(executor)
 
 	// Create handlers
-	companiesHandler := backend.NewCompaniesHandler(companyRepo)
-	departmentsHandler := backend.NewDepartmentsHandler(deptRepo)
+	companiesHandler := api.NewCompanyHandler(companyRepo)
+	departmentsHandler := api.NewDepartmentsHandler(deptRepo)
 
 	// Create router with gorilla/mux
 	r := mux.NewRouter()
