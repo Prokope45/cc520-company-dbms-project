@@ -166,7 +166,14 @@ Navigate to the Frontend App URL in your web browser to interact with the Compan
 
 ## OpenCode Setup
 
-Before opencode can be used, you must have OpenCode installed on your host machine. If it is installed,
+### Automated Setup
+
+Run `./scripts/setup_opencode.sh`, and in the `auth.json` you can add api keys to your preferred models. The `opencode.json` file
+allows for local models to be used instead.
+
+### Manual Setup
+
+For a manual setup, you need to have OpenCode installed on your host machine. If it is installed,
 then you need to have a symlink that points your auth.json to the project root `.opencode` folder.
 To generate the `auth.json` file, run `opencode auth login` and register a provider with an API key.
 
