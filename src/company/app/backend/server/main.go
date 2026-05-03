@@ -23,6 +23,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 
 	_ "github.com/microsoft/go-mssqldb"
 )
@@ -57,11 +58,13 @@ func main() {
 	companyRepo := repositories.NewCompanyRepository(executor)
 	deptRepo := repositories.NewDepartmentRepository(executor)
 	employeeRepo := repositories.NewEmployeeRepository(executor)
+	reportsRepo := repositories.NewReportsRepository(executor)
 
 	// Create handlers
 	companiesHandler := api.NewCompanyHandler(companyRepo)
 	departmentsHandler := api.NewDepartmentsHandler(deptRepo)
 	employeesHandler := api.NewEmployeesHandler(employeeRepo)
+	reportsHandler := api.NewReportsHandler(reportsRepo)
 
 	// Create router with gorilla/mux
 	r := mux.NewRouter()
@@ -87,10 +90,24 @@ func main() {
 	r.HandleFunc("/employees/{id}", employeesHandler.Update).Methods(http.MethodPut)
 	r.HandleFunc("/employees/{id}", employeesHandler.Delete).Methods(http.MethodDelete)
 
-	// Create server
+	// API routes - Reports
+	r.HandleFunc("/reports/department-salary-ranks", reportsHandler.GetDepartmentSalaryRanks).Methods(http.MethodGet)
+	r.HandleFunc("/reports/top-terminated-hourly", reportsHandler.GetTopTerminatedHourly).Methods(http.MethodGet)
+	r.HandleFunc("/reports/unhired-with-manager", reportsHandler.GetUnhiredWithManager).Methods(http.MethodGet)
+	r.HandleFunc("/reports/highest-paid-ceo", reportsHandler.GetHighestPaidCEO).Methods(http.MethodGet)
+
+	// Setup CORS middleware
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:5173", "http://127.0.0.1:5173"},
+		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodOptions},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	})
+
+	// Create server with CORS handler
 	server := &http.Server{
 		Addr:         ":8080",
-		Handler:      r,
+		Handler:      c.Handler(r),
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
 		IdleTimeout:  60 * time.Second,
