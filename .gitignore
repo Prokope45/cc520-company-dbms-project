@@ -1,6 +1,5 @@
 __pycache__/
 .tox
-reports/
 .coverage
 .opencode
 *_bin
