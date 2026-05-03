@@ -9,6 +9,7 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"strconv"
 	"time"
 
 	"cc520-company-dbms-project/src/company/app/backend/models"
@@ -37,7 +38,7 @@ func (r *CompanyRepository) GetAllCompanies(ctx context.Context) ([]models.Compa
 	var companies []models.Company
 	for _, row := range result.Rows {
 		company := models.Company{
-			CompanyID:   int64(row["CompanyID"].(int64)),
+			CompanyID:   r.parseCompanyID(row["CompanyID"]),
 			Name:        row["Name"].(string),
 			CreatedDate: r.parseDateTime(row["CreatedDate"]),
 		}
@@ -61,7 +62,7 @@ func (r *CompanyRepository) GetCompanyByID(ctx context.Context, id int64) (*mode
 	}
 
 	company := models.Company{
-		CompanyID:   int64(result.Rows[0]["CompanyID"].(int64)),
+		CompanyID:   r.parseCompanyID(result.Rows[0]["CompanyID"]),
 		Name:        result.Rows[0]["Name"].(string),
 		CreatedDate: r.parseDateTime(result.Rows[0]["CreatedDate"]),
 	}
@@ -78,7 +79,7 @@ func (r *CompanyRepository) CreateCompany(ctx context.Context, company models.Co
 		return nil, result.Error
 	}
 
-	company.CompanyID = int64(result.Rows[0]["CompanyID"].(int64))
+	company.CompanyID = r.parseCompanyID(result.Rows[0]["CompanyID"])
 
 	return &company, nil
 }
@@ -121,5 +122,20 @@ func (r *CompanyRepository) parseDateTime(val interface{}) string {
 		return time.Unix(int64(v), 0).Format("2006-01-02T15:04:05")
 	default:
 		return ""
+	}
+}
+
+// parseCompanyID handles both int64 and string types from SCOPE_IDENTITY()
+func (r *CompanyRepository) parseCompanyID(val interface{}) int64 {
+	switch v := val.(type) {
+	case int64:
+		return v
+	case int32:
+		return int64(v)
+	case string:
+		id, _ := strconv.ParseInt(v, 10, 64)
+		return id
+	default:
+		return 0
 	}
 }

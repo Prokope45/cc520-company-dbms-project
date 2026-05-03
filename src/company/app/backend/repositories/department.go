@@ -8,6 +8,7 @@ package repositories
 
 import (
 	"context"
+	"strconv"
 	"database/sql"
 
 	"cc520-company-dbms-project/src/company/app/backend/models"
@@ -36,8 +37,8 @@ func (r *DepartmentRepository) GetAllDepartments(ctx context.Context) ([]models.
 	var departments []models.Department
 	for _, row := range result.Rows {
 		department := models.Department{
-			DepartmentID: int64(row["DepartmentID"].(int64)),
-			CompanyID:    int64(row["CompanyID"].(int64)),
+			DepartmentID: r.parseDepartmentID(row["DepartmentID"]),
+			CompanyID:    r.parseDepartmentID(row["CompanyID"]),
 			Name:         row["Name"].(string),
 			Description:  row["Description"].(string),
 		}
@@ -61,8 +62,8 @@ func (r *DepartmentRepository) GetDepartmentByID(ctx context.Context, id int64) 
 	}
 
 	department := models.Department{
-		DepartmentID: int64(result.Rows[0]["DepartmentID"].(int64)),
-		CompanyID:    int64(result.Rows[0]["CompanyID"].(int64)),
+		DepartmentID: r.parseDepartmentID(result.Rows[0]["DepartmentID"]),
+		CompanyID:    r.parseDepartmentID(result.Rows[0]["CompanyID"]),
 		Name:         result.Rows[0]["Name"].(string),
 		Description:  result.Rows[0]["Description"].(string),
 	}
@@ -81,7 +82,7 @@ func (r *DepartmentRepository) CreateDepartment(ctx context.Context, department 
 		return nil, result.Error
 	}
 
-	department.DepartmentID = int64(result.Rows[0]["DepartmentID"].(int64))
+	department.DepartmentID = r.parseDepartmentID(result.Rows[0]["DepartmentID"])
 
 	return &department, nil
 }
@@ -110,4 +111,20 @@ func (r *DepartmentRepository) DeleteDepartment(ctx context.Context, id int64) e
 	}
 
 	return nil
+}
+
+
+// parseDepartmentID handles both int64 and string types from SCOPE_IDENTITY()
+func (r *DepartmentRepository) parseDepartmentID(val interface{}) int64 {
+	switch v := val.(type) {
+	case int64:
+		return v
+	case int32:
+		return int64(v)
+	case string:
+		id, _ := strconv.ParseInt(v, 10, 64)
+		return id
+	default:
+		return 0
+	}
 }

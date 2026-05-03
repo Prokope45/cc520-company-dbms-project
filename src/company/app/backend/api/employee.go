@@ -31,7 +31,7 @@ func NewEmployeesHandler(repo *repositories.EmployeeRepository) *EmployeesHandle
 func (h *EmployeesHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	employees, err := h.repo.GetAllEmployees(r.Context())
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, FormatDBError(err), http.StatusInternalServerError)
 		return
 	}
 
@@ -56,7 +56,7 @@ func (h *EmployeesHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 
 	employee, err := h.repo.GetEmployeeByID(r.Context(), id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		http.Error(w, FormatDBError(err), http.StatusBadRequest)
 		return
 	}
 
@@ -74,7 +74,7 @@ func (h *EmployeesHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	newEmployee, err := h.repo.CreateEmployee(r.Context(), employee)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, FormatDBError(err), http.StatusInternalServerError)
 		return
 	}
 
@@ -107,7 +107,7 @@ func (h *EmployeesHandler) Update(w http.ResponseWriter, r *http.Request) {
 	employee.EmployeeID = id
 	updatedEmployee, err := h.repo.UpdateEmployee(r.Context(), employee)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		http.Error(w, FormatDBError(err), http.StatusBadRequest)
 		return
 	}
 
@@ -132,7 +132,7 @@ func (h *EmployeesHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	err = h.repo.DeleteEmployee(r.Context(), id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		http.Error(w, FormatDBError(err), http.StatusBadRequest)
 		return
 	}
 

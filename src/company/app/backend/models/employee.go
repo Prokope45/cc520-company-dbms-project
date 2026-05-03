@@ -21,13 +21,15 @@ type Employee struct {
 	Phone string `json:"phone"`
 
 	// Address data
-	Street  string `json:"street"`
-	City    string `json:"city"`
-	State   string `json:"state"`
+	Street         string `json:"street"`
+	AddressLineTwo string `json:"address_line_two"`
+	City           string `json:"city"`
+	State          string `json:"state"`
 	ZipCode string `json:"zip_code"`
 
 	// Organization & Role Data
 	RoleTitle       string `json:"role_title"`
+	ManagerID       *int64 `json:"manager_id"`
 	ManagerName     string `json:"manager_name"`
 	HireDate        string `json:"hire_date"`
 	TerminationDate string `json:"termination_date"`
