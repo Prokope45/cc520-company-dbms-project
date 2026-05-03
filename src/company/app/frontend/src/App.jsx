@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import CompanyTable from './components/CompanyTable';
-import DepartmentTable from './components/DepartmentTable';
-import EmployeeTable from './components/EmployeeTable';
+import React from 'react';
+import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App() {
   return (
-    <div className="container">
-      <h1>Company Management</h1>
-      <CompanyTable />
-      <DepartmentTable />
-      <EmployeeTable />
+    <div className="App">
+      <Dashboard />
     </div>
   );
 }

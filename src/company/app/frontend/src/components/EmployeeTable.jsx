@@ -1,401 +1,453 @@
 import React, { useState, useEffect } from 'react';
-import { employeeAPI } from '../api';
+import axios from 'axios';
+import DataTable from 'react-data-table-component';
+import Select from 'react-select';
 import Modal from './Modal';
+import SearchBar from './SearchBar';
+import { FaEdit } from "react-icons/fa";
+import { FaTrashCan } from "react-icons/fa6";
+
+const API_BASE_URL = 'http://localhost:8080';
+
+// Check if DataTable is the default export or named export
+const Table = DataTable.default ? DataTable.default : DataTable;
 
 const EmployeeTable = () => {
-  const [employees, setEmployees] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  
-  // For standard add/edit modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingEmployee, setEditingEmployee] = useState(null);
-  const [formActiveTab, setFormActiveTab] = useState('personal'); // 'personal', 'organization', 'status'
-  
-  const [formData, setFormData] = useState({
-    company_id: '',
-    department_id: '',
-    department: '',
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    street: '',
-    city: '',
-    state: '',
-    zip_code: '',
-    role_title: '',
-    manager_name: '',
-    hire_date: '',
-    termination_date: '',
-    status_type: 'Salary',
-    hourly_pay: '',
-    max_hours_per_week: '',
-    base_salary: '',
-    bonus: '',
-    deductions: '',
-    paid_time_off_hours: '',
-    sick_hours: '',
-    effective_from: '',
-    effective_to: ''
-  });
+    const [employees, setEmployees] = useState([]);
+    const [departments, setDepartments] = useState([]);
+    const [companies, setCompanies] = useState([]);
+    const [roles, setRoles] = useState([
+        'Intern', 'Developer I', 'Developer II', 'Developer III',
+        'Senior Engineer', 'Member', 'Manager', 'Director',
+        'HR Manager', 'CFO', 'CTO', 'CHRO', 'CEO'
+    ]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [filterText, setFilterText] = useState('');
 
-  // For employee details modal (clicking the name)
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [detailsActiveTab, setDetailsActiveTab] = useState('personal'); // 'personal', 'organization', 'status'
+    const emptyEmployee = {
+        company_id: '', department_id: '', first_name: '', last_name: '',
+        email: '', phone: '', street: '', address_line_two: '', city: '', state: '', zip_code: '',
+        role_title: '', manager_id: '', hire_date: '', termination_date: '',
+        status_type: 'Salary', hourly_pay: 15, max_hours_per_week: 40,
+        base_salary: 0, bonus: 0, deductions: 0,
+        paid_time_off_hours: 0, sick_hours: 0,
+        effective_from: new Date().toISOString().split('T')[0],
+        effective_to: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0]
+    };
 
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
+    const [currentEmployee, setCurrentEmployee] = useState(emptyEmployee);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isReadOnly, setIsReadOnly] = useState(false);
+    const [activeModalTab, setActiveModalTab] = useState('person');
 
-  const fetchEmployees = async () => {
-    try {
-      const response = await employeeAPI.getAll();
-      setEmployees(response.data || []);
-      setErrorMessage('');
-    } catch (error) {
-      console.error('Error fetching employees:', error);
-      setErrorMessage(error.response?.data?.error || 'Failed to fetch employees');
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this employee?')) {
-      try {
-        await employeeAPI.delete(id);
+    useEffect(() => {
         fetchEmployees();
-        setErrorMessage('');
-      } catch (error) {
-        console.error('Error deleting employee:', error);
-        setErrorMessage(error.response?.data?.error || 'Failed to delete employee');
-      }
-    }
-  };
+        fetchDepartments();
+        fetchCompanies();
+    }, []);
 
-  const handleEdit = (emp) => {
-    setEditingEmployee(emp);
-    setFormActiveTab('personal');
-    setFormData({
-      company_id: emp.company_id || '',
-      department_id: emp.department_id || '',
-      department: emp.department || '',
-      first_name: emp.first_name || '',
-      last_name: emp.last_name || '',
-      email: emp.email || '',
-      phone: emp.phone || '',
-      street: emp.street || '',
-      city: emp.city || '',
-      state: emp.state || '',
-      zip_code: emp.zip_code || '',
-      role_title: emp.role_title || '',
-      manager_name: emp.manager_name || '',
-      hire_date: emp.hire_date || '',
-      termination_date: emp.termination_date || '',
-      status_type: emp.status_type || 'Salary',
-      hourly_pay: emp.hourly_pay || '',
-      max_hours_per_week: emp.max_hours_per_week || '',
-      base_salary: emp.base_salary || '',
-      bonus: emp.bonus || '',
-      deductions: emp.deductions || '',
-      paid_time_off_hours: emp.paid_time_off_hours || '',
-      sick_hours: emp.sick_hours || '',
-      effective_from: emp.effective_from || '',
-      effective_to: emp.effective_to || ''
-    });
-    setIsModalOpen(true);
-  };
+    const fetchEmployees = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/employees`);
+            setEmployees(response.data || []);
+        } catch (error) {
+            console.error('Error fetching employees:', error);
+        }
+    };
 
-  const handleAdd = () => {
-    setEditingEmployee(null);
-    setFormActiveTab('personal');
-    setFormData({
-      company_id: '',
-      department_id: '',
-      department: '',
-      first_name: '',
-      last_name: '',
-      email: '',
-      phone: '',
-      street: '',
-      city: '',
-      state: '',
-      zip_code: '',
-      role_title: '',
-      manager_name: '',
-      hire_date: '',
-      termination_date: '',
-      status_type: 'Salary',
-      hourly_pay: '',
-      max_hours_per_week: '',
-      base_salary: '',
-      bonus: '',
-      deductions: '',
-      paid_time_off_hours: '',
-      sick_hours: '',
-      effective_from: '',
-      effective_to: ''
-    });
-    setIsModalOpen(true);
-  };
+    const fetchDepartments = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/departments`);
+            setDepartments(response.data || []);
+        } catch (error) {
+            console.error('Error fetching departments:', error);
+        }
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    try {
-      const payload = { 
-        ...formData, 
-        company_id: parseInt(formData.company_id, 10),
-        department_id: parseInt(formData.department_id, 10)
-      };
+    const fetchCompanies = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/companies`);
+            setCompanies(response.data || []);
+        } catch (error) {
+            console.error('Error fetching companies:', error);
+        }
+    };
 
-      // Clean up fields based on status_type
-      if (payload.status_type === 'Salary') {
-        payload.hourly_pay = 0;
-        payload.max_hours_per_week = 0;
-        payload.base_salary = parseFloat(payload.base_salary) || 0;
-        payload.bonus = parseFloat(payload.bonus) || 0;
-        payload.deductions = parseFloat(payload.deductions) || 0;
-        payload.paid_time_off_hours = parseInt(payload.paid_time_off_hours, 10) || 0;
-        payload.sick_hours = parseInt(payload.sick_hours, 10) || 0;
-      } else {
-        payload.base_salary = 0;
-        payload.bonus = 0;
-        payload.deductions = 0;
-        payload.paid_time_off_hours = 0;
-        payload.sick_hours = 0;
-        payload.effective_from = '';
-        payload.effective_to = '';
-        payload.hourly_pay = parseFloat(payload.hourly_pay) || 0;
-        payload.max_hours_per_week = parseInt(payload.max_hours_per_week, 10) || 0;
-      }
-      
-      if (editingEmployee) {
-        await employeeAPI.update(editingEmployee.employee_id, payload);
-      } else {
-        await employeeAPI.create(payload);
-      }
-      setIsModalOpen(false);
-      fetchEmployees();
-    } catch (error) {
-      console.error('Error saving employee:', error);
-      const msg = error.response?.data?.error || error.response?.data?.message || 'Failed to save employee';
-      setErrorMessage(msg);
-    }
-  };
+    const handleOpenModal = (employee = null, readOnly = false) => {
+        if (employee) {
+            // Convert to format suitable for form inputs
+            setCurrentEmployee({
+                ...employee,
+                manager_id: employee.manager_id || '',
+                hire_date: employee.hire_date ? employee.hire_date.split('T')[0] : '',
+                termination_date: employee.termination_date ? employee.termination_date.split('T')[0] : '',
+                effective_from: employee.effective_from ? employee.effective_from.split('T')[0] : '',
+                effective_to: employee.effective_to ? employee.effective_to.split('T')[0] : ''
+            });
+            setIsEditing(true);
+        } else {
+            setCurrentEmployee(emptyEmployee);
+            setIsEditing(false);
+        }
+        setIsReadOnly(readOnly);
+        setActiveModalTab('person');
+        setIsModalOpen(true);
+    };
 
-  const handleNameClick = (emp) => {
-    setSelectedEmployee(emp);
-    setDetailsActiveTab('personal');
-    setIsDetailsModalOpen(true);
-  };
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setCurrentEmployee(emptyEmployee);
+        setIsEditing(false);
+        setIsReadOnly(false);
+    };
 
-  const renderTabButtons = (activeTab, setActiveTab) => (
-    <div style={{ display: 'flex', borderBottom: '1px solid #ccc', marginBottom: '15px' }}>
-      <button 
-        type="button"
-        style={{ padding: '10px', background: activeTab === 'personal' ? '#e9ecef' : 'none', border: 'none', borderBottom: activeTab === 'personal' ? '2px solid #007bff' : 'none', cursor: 'pointer' }}
-        onClick={() => setActiveTab('personal')}
-      >
-        Personal & Address
-      </button>
-      <button 
-        type="button"
-        style={{ padding: '10px', background: activeTab === 'organization' ? '#e9ecef' : 'none', border: 'none', borderBottom: activeTab === 'organization' ? '2px solid #007bff' : 'none', cursor: 'pointer' }}
-        onClick={() => setActiveTab('organization')}
-      >
-        Organization
-      </button>
-      <button 
-        type="button"
-        style={{ padding: '10px', background: activeTab === 'status' ? '#e9ecef' : 'none', border: 'none', borderBottom: activeTab === 'status' ? '2px solid #007bff' : 'none', cursor: 'pointer' }}
-        onClick={() => setActiveTab('status')}
-      >
-        Employment Status
-      </button>
-    </div>
-  );
+    const handleSave = async () => {
+        try {
+            // Format numeric values
+            const empToSave = {
+                ...currentEmployee,
+                company_id: parseInt(currentEmployee.company_id) || 0,
+                department_id: parseInt(currentEmployee.department_id) || 0,
+                manager_id: currentEmployee.manager_id ? parseInt(currentEmployee.manager_id) : null,
+                hourly_pay: parseFloat(currentEmployee.hourly_pay) || 0,
+                max_hours_per_week: parseInt(currentEmployee.max_hours_per_week) || 0,
+                base_salary: parseFloat(currentEmployee.base_salary) || 0,
+                bonus: parseFloat(currentEmployee.bonus) || 0,
+                deductions: parseFloat(currentEmployee.deductions) || 0,
+                paid_time_off_hours: parseInt(currentEmployee.paid_time_off_hours) || 0,
+                sick_hours: parseInt(currentEmployee.sick_hours) || 0,
+            };
 
-  return (
-    <div className="section">
-      <h2>Employees</h2>
-      <button className="btn btn-primary" onClick={handleAdd}>+ Add Employee</button>
+            if (isEditing) {
+                await axios.put(`${API_BASE_URL}/employees/${currentEmployee.employee_id}`, empToSave);
+            } else {
+                await axios.post(`${API_BASE_URL}/employees`, empToSave);
+            }
+            fetchEmployees();
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error saving employee:', error);
+            alert(`Failed to save employee: ${error.response?.data || error.message}`);
+        }
+    };
 
-      {errorMessage && (
-        <div className="alert alert-danger" style={{ marginTop: '10px', padding: '10px', backgroundColor: '#f8d7da', border: '1px solid #f5c6cb', borderRadius: '4px' }}>
-          {errorMessage}
-        </div>
-      )}
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this employee? This will cascade delete associated pay and role records.')) {
+            try {
+                await axios.delete(`${API_BASE_URL}/employees/${id}`);
+                fetchEmployees();
+            } catch (error) {
+                console.error('Error deleting employee:', error);
+                alert('Failed to delete employee.');
+            }
+        }
+    };
 
-      <table className="display" style={{ width: '100%', marginTop: '15px' }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Department</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {employees.map(emp => (
-            <tr key={emp.employee_id}>
-              <td className="table-cell-id">{emp.employee_id}</td>
-              <td className="table-cell-text">
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNameClick(emp); }}>
-                  {emp.first_name}
-                </a>
-              </td>
-              <td className="table-cell-text">
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNameClick(emp); }}>
-                  {emp.last_name}
-                </a>
-              </td>
-              <td className="table-cell-text">{emp.department}</td>
-              <td className="table-cell-actions">
-                <button className="btn btn-primary" onClick={() => handleEdit(emp)} style={{ marginRight: '5px' }}>Edit</button>
-                <button className="btn btn-secondary" onClick={() => handleDelete(emp.employee_id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    const handleInputChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setCurrentEmployee(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
 
-      {/* Edit/Add Modal */}
-      <Modal
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)}
-        title={editingEmployee ? "Edit Employee" : "Add Employee"}
-      >
-        <form onSubmit={handleSubmit}>
-          {renderTabButtons(formActiveTab, setFormActiveTab)}
+    const filteredItems = employees.filter(
+        item => {
+            const searchStr = `${item.first_name} ${item.last_name} ${item.email} ${item.department} ${item.role_title}`.toLowerCase();
+            return searchStr.includes(filterText.toLowerCase());
+        }
+    );
 
-          {formActiveTab === 'personal' && (
-            <div className="form-group" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div><label>First Name:</label><input type="text" required value={formData.first_name} onChange={(e) => setFormData({...formData, first_name: e.target.value})} /></div>
-              <div><label>Last Name:</label><input type="text" required value={formData.last_name} onChange={(e) => setFormData({...formData, last_name: e.target.value})} /></div>
-              <div><label>Email:</label><input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} /></div>
-              <div><label>Phone:</label><input type="text" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} /></div>
-              <div style={{ gridColumn: '1 / -1' }}><hr/></div>
-              <div><label>Street:</label><input type="text" value={formData.street} onChange={(e) => setFormData({...formData, street: e.target.value})} /></div>
-              <div><label>City:</label><input type="text" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} /></div>
-              <div><label>State:</label><input type="text" value={formData.state} onChange={(e) => setFormData({...formData, state: e.target.value})} /></div>
-              <div><label>Zip:</label><input type="text" value={formData.zip_code} onChange={(e) => setFormData({...formData, zip_code: e.target.value})} /></div>
-            </div>
-          )}
-
-          {formActiveTab === 'organization' && (
-            <div className="form-group" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div><label>Company ID:</label><input type="number" required value={formData.company_id} onChange={(e) => setFormData({...formData, company_id: e.target.value})} /></div>
-              <div><label>Department ID:</label><input type="number" required value={formData.department_id} onChange={(e) => setFormData({...formData, department_id: e.target.value})} /></div>
-              <div><label>Department Name:</label><input type="text" required value={formData.department} onChange={(e) => setFormData({...formData, department: e.target.value})} /></div>
-              <div><label>Role:</label><input type="text" value={formData.role_title} onChange={(e) => setFormData({...formData, role_title: e.target.value})} /></div>
-              <div><label>Manager Name:</label><input type="text" value={formData.manager_name} onChange={(e) => setFormData({...formData, manager_name: e.target.value})} /></div>
-              <div><label>Hire Date (YYYY-MM-DD):</label><input type="date" value={formData.hire_date} onChange={(e) => setFormData({...formData, hire_date: e.target.value})} /></div>
-              <div><label>Termination Date:</label><input type="date" value={formData.termination_date} onChange={(e) => setFormData({...formData, termination_date: e.target.value})} /></div>
-            </div>
-          )}
-
-          {formActiveTab === 'status' && (
-            <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div>
-                <label>Status Type:</label>
-                <select value={formData.status_type} onChange={(e) => setFormData({...formData, status_type: e.target.value})}>
-                  <option value="Salary">Salary</option>
-                  <option value="Hourly">Hourly</option>
-                </select>
-              </div>
-
-              {formData.status_type === 'Hourly' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
-                  <div><label>Hourly Pay:</label><input type="number" step="0.01" value={formData.hourly_pay} onChange={(e) => setFormData({...formData, hourly_pay: e.target.value})} /></div>
-                  <div><label>Max Hours Per Week:</label><input type="number" value={formData.max_hours_per_week} onChange={(e) => setFormData({...formData, max_hours_per_week: e.target.value})} /></div>
+    const columns = [
+        {
+            name: 'ID',
+            selector: row => row.employee_id,
+            sortable: true,
+            width: '80px',
+        },
+        {
+            name: 'Name',
+            selector: row => `${row.first_name} ${row.last_name}`,
+            sortable: true,
+            width: '180px',
+        },
+        {
+            name: 'Email',
+            selector: row => row.email,
+            sortable: true,
+            width: '200px',
+        },
+        {
+            name: 'Department',
+            selector: row => row.department,
+            sortable: true,
+        },
+        {
+            name: 'Role',
+            selector: row => row.role_title,
+            sortable: true,
+        },
+        {
+            name: 'Type',
+            selector: row => row.status_type,
+            sortable: true,
+            width: '100px',
+        },
+        {
+            name: 'Manager',
+            selector: row => row.manager_name,
+            sortable: true,
+        },
+        {
+            name: 'Actions',
+            cell: row => (
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <button className="btn btn-sm btn-outline-primary" onClick={(e) => { e.stopPropagation(); handleOpenModal(row, false); }}><FaEdit /></button>
+                    <button className="btn btn-sm btn-outline-danger" onClick={(e) => { e.stopPropagation(); handleDelete(row.employee_id); }}><FaTrashCan /></button>
                 </div>
-              )}
+            ),
+            ignoreRowClick: true,
+        },
+    ];
 
-              {formData.status_type === 'Salary' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
-                  <div><label>Base Salary:</label><input type="number" step="0.01" value={formData.base_salary} onChange={(e) => setFormData({...formData, base_salary: e.target.value})} /></div>
-                  <div><label>Bonus:</label><input type="number" step="0.01" value={formData.bonus} onChange={(e) => setFormData({...formData, bonus: e.target.value})} /></div>
-                  <div><label>Deductions:</label><input type="number" step="0.01" value={formData.deductions} onChange={(e) => setFormData({...formData, deductions: e.target.value})} /></div>
-                  <div><label>PTO Hours:</label><input type="number" value={formData.paid_time_off_hours} onChange={(e) => setFormData({...formData, paid_time_off_hours: e.target.value})} /></div>
-                  <div><label>Sick Hours:</label><input type="number" value={formData.sick_hours} onChange={(e) => setFormData({...formData, sick_hours: e.target.value})} /></div>
-                  <div><label>Effective From:</label><input type="date" value={formData.effective_from} onChange={(e) => setFormData({...formData, effective_from: e.target.value})} /></div>
-                  <div><label>Effective To:</label><input type="date" value={formData.effective_to} onChange={(e) => setFormData({...formData, effective_to: e.target.value})} /></div>
-                </div>
-              )}
+    // Get departments for the selected company
+    const availableDepartments = departments.filter(
+        d => currentEmployee.company_id ? d.company_id === parseInt(currentEmployee.company_id) : true
+    );
+
+    const handleSelectChange = (selectedOption, actionMeta) => {
+        setCurrentEmployee(prev => ({
+            ...prev,
+            [actionMeta.name]: selectedOption ? selectedOption.value : ''
+        }));
+    };
+
+    return (
+        <div>
+            <div className="table-header-container mb-3">
+                <button className="btn btn-primary" onClick={() => handleOpenModal()}>Add Employee</button>
+                <SearchBar 
+                    filterText={filterText} 
+                    onFilter={e => setFilterText(e.target.value)} 
+                    placeholderText="Search employees..."
+                />
             </div>
-          )}
 
-          <div style={{ marginTop: '20px', borderTop: '1px solid #eee', paddingTop: '15px' }}>
-            <button type="submit" className="btn btn-primary">Save</button>
-            <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)} style={{ marginLeft: '10px' }}>Cancel</button>
-          </div>
-        </form>
-      </Modal>
+            <Table
+                columns={columns}
+                data={filteredItems}
+                pagination
+                onRowClicked={(row) => handleOpenModal(row, true)}
+                highlightOnHover
+                pointerOnHover
+                customStyles={{
+                    headRow: {
+                        style: {
+                            backgroundColor: '#f8f9fa',
+                            fontWeight: 'bold',
+                        }
+                    }
+                }}
+            />
 
-      {/* Details View Modal */}
-      {selectedEmployee && (
-        <Modal
-          isOpen={isDetailsModalOpen}
-          onClose={() => setIsDetailsModalOpen(false)}
-          title={`Employee Details: ${selectedEmployee.first_name} ${selectedEmployee.last_name}`}
-        >
-          {renderTabButtons(detailsActiveTab, setDetailsActiveTab)}
-
-          <div style={{ lineHeight: '1.6', minHeight: '200px' }}>
-            {detailsActiveTab === 'personal' && (
-              <div>
-                <h3 style={{ borderBottom: '1px solid #ccc', paddingBottom: '5px' }}>Contact Info</h3>
-                <p><strong>Email:</strong> {selectedEmployee.email}</p>
-                <p><strong>Phone:</strong> {selectedEmployee.phone}</p>
-
-                <h3 style={{ borderBottom: '1px solid #ccc', paddingBottom: '5px', marginTop: '15px' }}>Address</h3>
-                <p>{selectedEmployee.street}</p>
-                <p>{selectedEmployee.city}, {selectedEmployee.state} {selectedEmployee.zip_code}</p>
-              </div>
-            )}
-
-            {detailsActiveTab === 'organization' && (
-              <div>
-                <p><strong>Company ID:</strong> {selectedEmployee.company_id}</p>
-                <p><strong>Department:</strong> {selectedEmployee.department} (ID: {selectedEmployee.department_id})</p>
-                <p><strong>Role:</strong> {selectedEmployee.role_title}</p>
-                <p><strong>Manager:</strong> {selectedEmployee.manager_name}</p>
-                <p><strong>Hire Date:</strong> {selectedEmployee.hire_date || 'N/A'}</p>
-                <p><strong>Termination Date:</strong> {selectedEmployee.termination_date || 'N/A'}</p>
-              </div>
-            )}
-
-            {detailsActiveTab === 'status' && (
-              <div>
-                <p><strong>Employee Type:</strong> {selectedEmployee.status_type}</p>
+            <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={isReadOnly ? 'View Employee Profile' : (isEditing ? 'Edit Employee Profile' : 'Add Employee Profile')} wide={true}>
+                <div className="tabs-container mb-3">
+                    <button className={`tab-button ${activeModalTab === 'person' ? 'active' : ''}`} onClick={() => setActiveModalTab('person')}>Person & Address</button>
+                    <button className={`tab-button ${activeModalTab === 'employment' ? 'active' : ''}`} onClick={() => setActiveModalTab('employment')}>Employment Data</button>
+                    <button className={`tab-button ${activeModalTab === 'pay' ? 'active' : ''}`} onClick={() => setActiveModalTab('pay')}>Pay Structure</button>
+                </div>
                 
-                {selectedEmployee.status_type === 'Hourly' ? (
-                  <div style={{ marginTop: '10px' }}>
-                    <p><strong>Hourly Pay:</strong> ${selectedEmployee.hourly_pay}</p>
-                    <p><strong>Max Hours/Week:</strong> {selectedEmployee.max_hours_per_week}</p>
-                  </div>
-                ) : (
-                  <div style={{ marginTop: '10px' }}>
-                    <p><strong>Base Salary:</strong> ${selectedEmployee.base_salary}</p>
-                    <p><strong>Bonus:</strong> ${selectedEmployee.bonus}</p>
-                    <p><strong>Deductions:</strong> ${selectedEmployee.deductions}</p>
-                    <p><strong>PTO Hours:</strong> {selectedEmployee.paid_time_off_hours}</p>
-                    <p><strong>Sick Hours:</strong> {selectedEmployee.sick_hours}</p>
-                    <p><strong>Effective Period:</strong> {selectedEmployee.effective_from || 'N/A'} to {selectedEmployee.effective_to || 'N/A'}</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          
-          <div style={{ marginTop: '20px', borderTop: '1px solid #eee', paddingTop: '15px' }}>
-            <button className="btn btn-secondary" onClick={() => setIsDetailsModalOpen(false)}>Close</button>
-          </div>
-        </Modal>
-      )}
-    </div>
-  );
+                <div className="tab-content" style={{ minHeight: '400px' }}>
+                    {activeModalTab === 'person' && (
+                        <div>
+                            <h3>Personal Info</h3>
+                            <div className="form-group row">
+                                <div className="col">
+                                    <label>First Name:</label>
+                                    <input className="form-control" type="text" name="first_name" value={currentEmployee.first_name || ''} onChange={handleInputChange} required  disabled={isReadOnly} />
+                                </div>
+                                <div className="col">
+                                    <label>Last Name:</label>
+                                    <input className="form-control" type="text" name="last_name" value={currentEmployee.last_name || ''} onChange={handleInputChange} required  disabled={isReadOnly} />
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <div className="col">
+                                    <label>Email:</label>
+                                    <input className="form-control" type="email" name="email" value={currentEmployee.email || ''} onChange={handleInputChange} required  disabled={isReadOnly} />
+                                </div>
+                                <div className="col">
+                                    <label>Phone:</label>
+                                    <input className="form-control" type="text" name="phone" value={currentEmployee.phone || ''} onChange={handleInputChange}  disabled={isReadOnly} />
+                                </div>
+                            </div>
+                            
+                            <h3 className="mt-4">Address</h3>
+                            <div className="form-group">
+                                <label>Address Line 1:</label>
+                                <input className="form-control" type="text" name="street" value={currentEmployee.street || ''} onChange={handleInputChange} required  disabled={isReadOnly} />
+                            </div>
+                            <div className="form-group mt-2">
+                                <label>Address Line 2:</label>
+                                <input className="form-control" type="text" name="address_line_two" placeholder="Apt. number, gate number, etc." value={currentEmployee.address_line_two || ''} onChange={handleInputChange}  disabled={isReadOnly} />
+                            </div>
+                            <div className="form-group row mt-2">
+                                <div className="col">
+                                    <label>City:</label>
+                                    <input className="form-control" type="text" name="city" value={currentEmployee.city || ''} onChange={handleInputChange} required  disabled={isReadOnly} />
+                                </div>
+                                <div className="col" style={{flex: 0.5}}>
+                                    <label>State:</label>
+                                    <input className="form-control" type="text" name="state" value={currentEmployee.state || ''} onChange={handleInputChange} required  disabled={isReadOnly} />
+                                </div>
+                                <div className="col" style={{flex: 0.5}}>
+                                    <label>Zip:</label>
+                                    <input className="form-control" type="text" name="zip_code" value={currentEmployee.zip_code || ''} onChange={handleInputChange} required  disabled={isReadOnly} />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeModalTab === 'employment' && (
+                        <div>
+                            <h3>Organization</h3>
+                            <div className="form-group row mb-2">
+                                <div className="col">
+                                    <label>Company:</label>
+                                    <Select 
+                                        name="company_id" 
+                                        value={companies.map(c => ({ value: c.company_id, label: c.name })).find(o => o.value == currentEmployee.company_id) || null}
+                                        onChange={handleSelectChange}
+                                        options={companies.map(c => ({ value: c.company_id, label: c.name }))}
+                                        placeholder="Select Company"
+                                        isClearable
+                                        required
+                                        isDisabled={isReadOnly}
+                                    />
+                                </div>
+                                <div className="col">
+                                    <label>Department:</label>
+                                    <Select 
+                                        name="department_id" 
+                                        value={availableDepartments.map(d => ({ value: d.department_id, label: d.name })).find(o => o.value == currentEmployee.department_id) || null}
+                                        onChange={handleSelectChange}
+                                        options={availableDepartments.map(d => ({ value: d.department_id, label: d.name }))}
+                                        placeholder="Select Department"
+                                        isClearable
+                                        required
+                                        isDisabled={isReadOnly}
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div className="form-group row mb-2">
+                                <div className="col">
+                                    <label>Role:</label>
+                                    <Select 
+                                        name="role_title" 
+                                        value={roles.map(r => ({ value: r, label: r })).find(o => o.value === currentEmployee.role_title) || null}
+                                        onChange={handleSelectChange}
+                                        options={roles.map(r => ({ value: r, label: r }))}
+                                        placeholder="Select Role"
+                                        isClearable
+                                        required
+                                        isDisabled={isReadOnly}
+                                    />
+                                </div>
+                                <div className="col">
+                                    <label>Manager:</label>
+                                    <Select 
+                                        name="manager_id" 
+                                        value={employees.filter(e => e.employee_id !== currentEmployee.employee_id).map(e => ({ value: e.employee_id, label: `${e.first_name} ${e.last_name}` })).find(o => o.value == currentEmployee.manager_id) || null}
+                                        onChange={handleSelectChange}
+                                        options={employees.filter(e => e.employee_id !== currentEmployee.employee_id).map(e => ({ value: e.employee_id, label: `${e.first_name} ${e.last_name}` }))}
+                                        placeholder="None"
+                                        isClearable
+                                        isDisabled={isReadOnly}
+                                    />
+                                </div>
+                            </div>
+
+                            <h3 className="mt-4">Dates</h3>
+                            <div className="form-group row">
+                                <div className="col">
+                                    <label>Hire Date:</label>
+                                    <input className="form-control" type="date" name="hire_date" value={currentEmployee.hire_date || ''} onChange={handleInputChange}  disabled={isReadOnly} />
+                                </div>
+                                <div className="col">
+                                    <label>Termination Date:</label>
+                                    <input className="form-control" type="date" name="termination_date" value={currentEmployee.termination_date || ''} onChange={handleInputChange}  disabled={isReadOnly} />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeModalTab === 'pay' && (
+                        <div>
+                            <h3>Pay Structure</h3>
+                            <div className="form-group">
+                                <label>Status Type:</label>
+                                <select className="form-select" name="status_type" value={currentEmployee.status_type || 'Salary'} onChange={handleInputChange} disabled={isReadOnly}>
+                                    <option value="Salary">Salary</option>
+                                    <option value="Hourly">Hourly</option>
+                                </select>
+                            </div>
+
+                            {currentEmployee.status_type === 'Hourly' ? (
+                                <div className="form-group row">
+                                    <div className="col">
+                                        <label>Hourly Pay ($):</label>
+                                        <input className="form-control" type="number" step="0.01" name="hourly_pay" value={currentEmployee.hourly_pay || 0} onChange={handleInputChange}  disabled={isReadOnly} />
+                                    </div>
+                                    <div className="col">
+                                        <label>Max Hours/Week:</label>
+                                        <input className="form-control" type="number" name="max_hours_per_week" value={currentEmployee.max_hours_per_week || 40} onChange={handleInputChange}  disabled={isReadOnly} />
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="form-group row">
+                                        <div className="col">
+                                            <label>Base Salary ($):</label>
+                                            <input className="form-control" type="number" name="base_salary" value={currentEmployee.base_salary || 0} onChange={handleInputChange}  disabled={isReadOnly} />
+                                        </div>
+                                        <div className="col">
+                                            <label>Bonus ($):</label>
+                                            <input className="form-control" type="number" name="bonus" value={currentEmployee.bonus || 0} onChange={handleInputChange}  disabled={isReadOnly} />
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <div className="col">
+                                            <label>PTO Hours:</label>
+                                            <input className="form-control" type="number" name="paid_time_off_hours" value={currentEmployee.paid_time_off_hours || 0} onChange={handleInputChange}  disabled={isReadOnly} />
+                                        </div>
+                                        <div className="col">
+                                            <label>Sick Hours:</label>
+                                            <input className="form-control" type="number" name="sick_hours" value={currentEmployee.sick_hours || 0} onChange={handleInputChange}  disabled={isReadOnly} />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    )}
+                </div>
+                
+                <div className="modal-actions mt-4 d-flex gap-2" style={{ borderTop: '1px solid #ddd', paddingTop: '15px' }}>
+                    {isReadOnly ? (
+                        <>
+                            <button className="btn btn-primary" onClick={() => setIsReadOnly(false)}>Edit</button>
+                            <button className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
+                        </>
+                    ) : (
+                        <>
+                            <button className="btn btn-success" onClick={handleSave}>Save Profile</button>
+                            <button className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                        </>
+                    )}
+                </div>
+            </Modal>
+        </div>
+    );
 };
 
 export default EmployeeTable;

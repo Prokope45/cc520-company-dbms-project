@@ -1,158 +1,202 @@
 import React, { useState, useEffect } from 'react';
-import { departmentAPI } from '../api';
+import axios from 'axios';
+import DataTable from 'react-data-table-component';
 import Modal from './Modal';
+import SearchBar from './SearchBar';
+import { FaEdit } from "react-icons/fa";
+import { FaTrashCan } from "react-icons/fa6";
+
+const API_BASE_URL = 'http://localhost:8080';
+
+// Check if DataTable is the default export or named export
+const Table = DataTable.default ? DataTable.default : DataTable;
 
 const DepartmentTable = () => {
-  const [departments, setDepartments] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingDepartment, setEditingDepartment] = useState(null);
-  const [formData, setFormData] = useState({ company_id: '', name: '', description: '' });
-  const [errorMessage, setErrorMessage] = useState('');
+    const [departments, setDepartments] = useState([]);
+    const [companies, setCompanies] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentDepartment, setCurrentDepartment] = useState({ company_id: '', name: '', description: '' });
+    const [isEditing, setIsEditing] = useState(false);
+    const [filterText, setFilterText] = useState('');
 
-  useEffect(() => {
-    fetchDepartments();
-  }, []);
-
-  const fetchDepartments = async () => {
-    try {
-      const response = await departmentAPI.getAll();
-      setDepartments(response.data);
-      setErrorMessage('');
-    } catch (error) {
-      console.error('Error fetching departments:', error);
-      setErrorMessage(error.response?.data?.error || 'Failed to fetch departments');
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this department?')) {
-      try {
-        await departmentAPI.delete(id);
+    useEffect(() => {
         fetchDepartments();
-        setErrorMessage('');
-      } catch (error) {
-        console.error('Error deleting department:', error);
-        setErrorMessage(error.response?.data?.error || 'Failed to delete department');
-      }
-    }
-  };
+        fetchCompanies();
+    }, []);
 
-  const handleEdit = (department) => {
-    setEditingDepartment(department);
-    setFormData({ 
-      company_id: department.company_id || '', 
-      name: department.name || '', 
-      description: department.description || '' 
-    });
-    setIsModalOpen(true);
-  };
+    const fetchDepartments = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/departments`);
+            setDepartments(response.data || []);
+        } catch (error) {
+            console.error('Error fetching departments:', error);
+        }
+    };
 
-  const handleAdd = () => {
-    setEditingDepartment(null);
-    setFormData({ company_id: '', name: '', description: '' });
-    setIsModalOpen(true);
-  };
+    const fetchCompanies = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/companies`);
+            setCompanies(response.data || []);
+        } catch (error) {
+            console.error('Error fetching companies:', error);
+        }
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    try {
-      // Convert company_id to number
-      const payload = { ...formData, company_id: parseInt(formData.company_id, 10) };
-      
-      if (editingDepartment) {
-        await departmentAPI.update(editingDepartment.id, payload);
-      } else {
-        await departmentAPI.create(payload);
-      }
-      setIsModalOpen(false);
-      fetchDepartments();
-    } catch (error) {
-      console.error('Error saving department:', error);
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to save department';
-      setErrorMessage(errorMessage);
-    }
-  };
-  return (
-    <div className="section">
-      <h2>Departments</h2>
-      <button className="btn btn-primary" onClick={handleAdd}>+ Add Department</button>
+    const handleOpenModal = (department = { company_id: '', name: '', description: '' }) => {
+        setCurrentDepartment(department);
+        setIsEditing(!!department.department_id);
+        setIsModalOpen(true);
+    };
 
-      {errorMessage && (
-        <div className="alert alert-danger" style={{ marginTop: '10px', padding: '10px', backgroundColor: '#f8d7da', border: '1px solid #f5c6cb', borderRadius: '4px' }}>
-          {errorMessage}
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setCurrentDepartment({ company_id: '', name: '', description: '' });
+        setIsEditing(false);
+    };
+
+    const handleSave = async () => {
+        try {
+            // Ensure company_id is a number
+            const deptToSave = {
+                ...currentDepartment,
+                company_id: parseInt(currentDepartment.company_id, 10)
+            };
+
+            if (isEditing) {
+                await axios.put(`${API_BASE_URL}/departments/${currentDepartment.department_id}`, deptToSave);
+            } else {
+                await axios.post(`${API_BASE_URL}/departments`, deptToSave);
+            }
+            fetchDepartments();
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error saving department:', error);
+            alert('Failed to save department. Please check the console for details.');
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this department?')) {
+            try {
+                await axios.delete(`${API_BASE_URL}/departments/${id}`);
+                fetchDepartments();
+            } catch (error) {
+                console.error('Error deleting department:', error);
+            }
+        }
+    };
+
+    const filteredItems = departments.filter(
+        item => {
+            const companyName = companies.find(c => c.company_id === item.company_id)?.name || '';
+            const searchStr = `${item.name} ${item.description} ${companyName}`.toLowerCase();
+            return searchStr.includes(filterText.toLowerCase());
+        }
+    );
+
+    const columns = [
+        {
+            name: 'ID',
+            selector: row => row.department_id,
+            sortable: true,
+            width: '80px',
+        },
+        {
+            name: 'Company',
+            selector: row => companies.find(c => c.company_id === row.company_id)?.name || 'Unknown',
+            sortable: true,
+            width: '200px',
+        },
+        {
+            name: 'Name',
+            selector: row => row.name,
+            sortable: true,
+        },
+        {
+            name: 'Description',
+            selector: row => row.description,
+            sortable: true,
+        },
+        {
+            name: 'Actions',
+            cell: row => (
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <button className="btn btn-sm btn-outline-primary" onClick={() => handleOpenModal(row)}><FaEdit /></button>
+                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(row.department_id)}><FaTrashCan /></button>
+                </div>
+            ),
+            ignoreRowClick: true,
+        },
+    ];
+
+    return (
+        <div>
+            <div className="table-header-container mb-3">
+                <button className="btn btn-primary" onClick={() => handleOpenModal()}>Add Department</button>
+                <SearchBar 
+                    filterText={filterText} 
+                    onFilter={e => setFilterText(e.target.value)} 
+                    placeholderText="Search departments..."
+                />
+            </div>
+
+            <Table
+                columns={columns}
+                data={filteredItems}
+                pagination
+                highlightOnHover
+                pointerOnHover
+                customStyles={{
+                    headRow: {
+                        style: {
+                            backgroundColor: '#f8f9fa',
+                            fontWeight: 'bold',
+                        }
+                    }
+                }}
+            />
+
+            <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={isEditing ? 'Edit Department' : 'Add Department'}>
+                <div className="form-group">
+                    <label>Company:</label>
+                    <select
+                        className='form-select'
+                        value={currentDepartment.company_id || ''}
+                        onChange={(e) => setCurrentDepartment({ ...currentDepartment, company_id: e.target.value })}
+                        required
+                    >
+                        <option value="">Select a Company</option>
+                        {companies.map(company => (
+                            <option key={company.company_id} value={company.company_id}>
+                                {company.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label>Name:</label>
+                    <input
+                        type="text"
+                        value={currentDepartment.name || ''}
+                        onChange={(e) => setCurrentDepartment({ ...currentDepartment, name: e.target.value })}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Description:</label>
+                    <textarea
+                        value={currentDepartment.description || ''}
+                        onChange={(e) => setCurrentDepartment({ ...currentDepartment, description: e.target.value })}
+                        rows="3"
+                    />
+                </div>
+                <div className="modal-actions mt-4 d-flex gap-2">
+                    <button className="btn btn-success" onClick={handleSave}>Save</button>
+                    <button className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                </div>
+            </Modal>
         </div>
-      )}
-
-      <table className="display" style={{ width: '100%', marginTop: '15px' }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Company ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {departments.map(dept => (
-            <tr key={dept.department_id}>
-              <td className="table-cell-id">{dept.department_id}</td>
-              <td className="table-cell-number">{dept.company_id}</td>
-              <td className="table-cell-text">{dept.name}</td>
-              <td className="table-cell-text">{dept.description}</td>
-              <td className="table-cell-actions">
-                <button className="btn btn-primary" onClick={() => handleEdit(dept)} style={{ marginRight: '5px' }}>Edit</button>
-                <button className="btn btn-secondary" onClick={() => handleDelete(dept.department_id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <Modal
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)}
-        title={editingDepartment ? "Edit Department" : "Add Department"}
-      >
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="deptCompanyId">Company ID:</label>
-            <input 
-              type="number" 
-              id="deptCompanyId" 
-              name="company_id" 
-              required 
-              value={formData.company_id}
-              onChange={(e) => setFormData({ ...formData, company_id: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="deptName">Department Name:</label>
-            <input 
-              type="text" 
-              id="deptName" 
-              name="name" 
-              required 
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="deptDescription">Department Description:</label>
-            <textarea 
-              id="deptDescription" 
-              name="description" 
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            ></textarea>
-          </div>
-          <button type="submit" className="btn btn-primary">Save</button>
-          <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)} style={{ marginLeft: '10px' }}>Cancel</button>
-        </form>
-      </Modal>
-    </div>
-  );
+    );
 };
 
 export default DepartmentTable;
