@@ -4,10 +4,11 @@ BEGIN
     (
         [DepartmentID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
         [CompanyID] INT NOT NULL,
-        [Name] NVARCHAR(255) NOT NULL UNIQUE,
+        [Name] NVARCHAR(255) NOT NULL,
         [Description] NVARCHAR(255),
         CONSTRAINT [FK_Department_Company] FOREIGN KEY ([CompanyID])
             REFERENCES Org.[Company] ([CompanyID])
-            ON DELETE CASCADE
+            ON DELETE CASCADE,
+        CONSTRAINT [UK_Department_CompanyName] UNIQUE ([CompanyID], [Name])
     );
 END;

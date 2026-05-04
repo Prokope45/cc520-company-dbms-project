@@ -1,6 +1,7 @@
 DECLARE @SalaryEmployeeStaging TABLE
 (
     EmployeeID INT NOT NULL PRIMARY KEY,
+    SalaryID INT NOT NULL,
     PaidTimeOffHours INT NOT NULL,
     SickHours INT NOT NULL
 );
@@ -10,155 +11,101 @@ DECLARE @SalaryEmployeeStaging TABLE
 -- Only employees with salary employment type receive salary data
 -- Higher positions receive higher salaries as per the salary structure
 
-INSERT INTO @SalaryEmployeeStaging (EmployeeID, PaidTimeOffHours, SickHours)
-VALUES 
--- EXECUTIVES (EmployeeTypeID=1) - PersonIDs 1-6
--- CEO (PersonID=1)
-(1, 20, 40),
--- HR Department Executive (PersonID=2)
-(2, 20, 40),
--- Finance Department Exec
-(3, 20, 40),
--- Sales Department Executive
-(4, 20, 40),
--- Marketing Department Executive
-(5, 20, 40),
--- Engineering Department Executive
-(6, 20, 40),
-
--- DIRECTORS (EmployeeTypeID=1) - PersonIDs 7-11
--- HR Director (PersonID=7)
-(7, 15, 30),
--- Finance Director (PersonID=8)
-(8, 15, 30),
--- Sales Director (PersonID=9)
-(9, 15, 30),
--- Marketing Director (PersonID=10)
-(10, 15, 30),
--- Engineering Director (PersonID=11)
-(11, 15, 30),
-
--- MANAGERS (EmployeeTypeID=1) - PersonIDs 12-16
--- HR Manager (PersonID=12)
-(12, 12, 24),
--- Finance Manager (PersonID=13)
-(13, 12, 24),
--- Sales Manager (PersonID=14)
-(14, 12, 24),
--- Marketing Manager (PersonID=15)
-(15, 12, 24),
--- Engineering Manager (PersonID=16)
-(16, 12, 24),
-
--- HR STAFF (EmployeeTypeID=1) - PersonIDs 17-26
--- HR Staff (PersonID=17)
-(17, 10, 20),
--- HR Staff (PersonID=18)
-(18, 10, 20),
--- HR Staff (PersonID=19)
-(19, 10, 20),
--- HR Staff (PersonID=20)
-(20, 10, 20),
--- HR Staff (PersonID=21) - Hourly employee (EmployeeTypeID=2), excluded from salary data
-(22, 10, 20),
--- HR Staff (PersonID=23) - Hourly employee (EmployeeTypeID=2), excluded from salary data
-(24, 10, 20),
--- HR Staff (PersonID=25) - Hourly employee (EmployeeTypeID=2), excluded from salary data
-(26, 10, 20),
-
--- FINANCE STAFF (EmployeeTypeID=1) - PersonIDs 27-36
--- Finance Staff (PersonID=27)
-(27, 10, 20),
--- Finance Staff (PersonID=28)
-(28, 10, 20),
--- Finance Staff (PersonID=29)
-(29, 10, 20),
--- Finance Staff (PersonID=30)
-(30, 10, 20),
--- Finance Staff (PersonID=31)
-(31, 10, 20),
--- Finance Staff (PersonID=32)
-(32, 10, 20),
--- Finance Staff (PersonID=33)
-(33, 10, 20),
--- Finance Staff (PersonID=34)
-(34, 10, 20),
--- Finance Staff (PersonID=35)
-(35, 10, 20),
--- Finance Staff (PersonID=36)
-(36, 10, 20),
-
--- SALES STAFF (EmployeeTypeID=1) - PersonIDs 37-46
--- Sales Staff (PersonID=37)
-(37, 10, 20),
--- Sales Staff (PersonID=38)
-(38, 10, 20),
--- Sales Staff (PersonID=39)
-(39, 10, 20),
--- Sales Staff (PersonID=40)
-(40, 10, 20),
--- Sales Staff (PersonID=41)
-(41, 10, 20),
--- Sales Staff (PersonID=42)
-(42, 10, 20),
--- Sales Staff (PersonID=43)
-(43, 10, 20),
--- Sales Staff (PersonID=44)
-(44, 10, 20),
--- Sales Staff (PersonID=45)
-(45, 10, 20),
--- Sales Staff (PersonID=46)
-(46, 10, 20),
-
--- MARKETING STAFF (EmployeeTypeID=1) - PersonIDs 47-56
--- Marketing Staff (PersonID=47)
-(47, 10, 20),
--- Marketing Staff (PersonID=48)
-(48, 10, 20),
--- Marketing Staff (PersonID=49)
-(49, 10, 20),
--- Marketing Staff (PersonID=50)
-(50, 10, 20),
--- Marketing Staff (PersonID=51)
-(51, 10, 20),
--- Marketing Staff (PersonID=52)
-(52, 10, 20),
--- Marketing Staff (PersonID=53)
-(53, 10, 20),
--- Marketing Staff (PersonID=54)
-(54, 10, 20),
--- Marketing Staff (PersonID=55)
-(55, 10, 20),
--- Marketing Staff (PersonID=56)
-(56, 10, 20),
-
--- ENGINEERING STAFF (EmployeeTypeID=1) - PersonIDs 57-66
--- Engineering Staff (PersonID=57)
-(57, 10, 20),
--- Engineering Staff (PersonID=58)
-(58, 10, 20),
--- Engineering Staff (PersonID=59)
-(59, 10, 20),
--- Engineering Staff (PersonID=60)
-(60, 10, 20),
--- Engineering Staff (PersonID=61)
-(61, 10, 20),
--- Engineering Staff (PersonID=62)
-(62, 10, 20);
--- Engineering Staff (PersonID=63) - Hourly employee (EmployeeTypeID=2), excluded from salary data
--- Engineering Staff (PersonID=64) - Hourly employee (EmployeeTypeID=2), excluded from salary data
--- Engineering Staff (PersonID=65) - Hourly employee (EmployeeTypeID=2), excluded from salary data
--- Engineering Staff (PersonID=66) - Hourly employee (EmployeeTypeID=2), excluded from salary data
+INSERT @SalaryEmployeeStaging(EmployeeID, SalaryID, PaidTimeOffHours, SickHours) VALUES
+(1, 1, 141, 77),
+(2, 2, 151, 90),
+(3, 3, 107, 82),
+(4, 4, 179, 86),
+(5, 5, 137, 70),
+(6, 6, 131, 81),
+(8, 7, 120, 77),
+(9, 8, 91, 82),
+(11, 9, 154, 89),
+(12, 10, 128, 45),
+(13, 11, 173, 58),
+(14, 12, 96, 51),
+(15, 13, 197, 44),
+(16, 14, 90, 60),
+(17, 15, 139, 72),
+(18, 16, 164, 97),
+(19, 17, 91, 41),
+(20, 18, 132, 95),
+(21, 19, 89, 100),
+(22, 20, 194, 45),
+(23, 21, 94, 93),
+(24, 22, 158, 92),
+(25, 23, 153, 40),
+(29, 24, 166, 46),
+(30, 25, 99, 67),
+(31, 26, 106, 92),
+(32, 27, 160, 92),
+(33, 28, 144, 88),
+(34, 29, 88, 80),
+(35, 30, 161, 71),
+(36, 31, 136, 44),
+(37, 32, 117, 94),
+(38, 33, 135, 77),
+(39, 34, 165, 77),
+(40, 35, 142, 91),
+(41, 36, 141, 100),
+(42, 37, 164, 70),
+(43, 38, 198, 78),
+(44, 39, 122, 47),
+(45, 40, 144, 50),
+(46, 41, 131, 92),
+(47, 42, 197, 77),
+(49, 43, 142, 92),
+(50, 44, 87, 53),
+(51, 45, 115, 82),
+(53, 46, 166, 82),
+(54, 47, 98, 80),
+(55, 48, 165, 100),
+(56, 49, 176, 91),
+(58, 50, 97, 84),
+(59, 51, 95, 68),
+(60, 52, 185, 51),
+(61, 53, 180, 45),
+(62, 54, 167, 63),
+(63, 55, 155, 88),
+(64, 56, 197, 63),
+(65, 57, 158, 78),
+(66, 58, 148, 94),
+(67, 59, 84, 48),
+(68, 60, 105, 90),
+(69, 61, 129, 98),
+(70, 62, 199, 85),
+(71, 63, 160, 49),
+(72, 64, 196, 45),
+(74, 65, 113, 58),
+(75, 66, 130, 96),
+(76, 67, 97, 46),
+(77, 68, 165, 61),
+(78, 69, 188, 48),
+(79, 70, 152, 97),
+(80, 71, 135, 91),
+(81, 72, 98, 62),
+(82, 73, 151, 65),
+(83, 74, 171, 68),
+(84, 75, 96, 95),
+(85, 76, 162, 88),
+(86, 77, 163, 96),
+(87, 78, 123, 84),
+(88, 79, 196, 88),
+(89, 80, 138, 58),
+(90, 81, 180, 90),
+(91, 82, 176, 91);
 
 MERGE Org.SalaryEmployee T
 USING (SELECT * FROM @SalaryEmployeeStaging) S ON T.EmployeeID = S.EmployeeID
 WHEN MATCHED AND (
+    T.SalaryID <> S.SalaryID OR
     T.PaidTimeOffHours <> S.PaidTimeOffHours OR
     T.SickHours <> S.SickHours
 ) THEN
-    UPDATE SET 
+    UPDATE SET
+        SalaryID = S.SalaryID,
         PaidTimeOffHours = S.PaidTimeOffHours,
         SickHours = S.SickHours
 WHEN NOT MATCHED THEN
-    INSERT(EmployeeID, PaidTimeOffHours, SickHours)
-    VALUES(S.EmployeeID, S.PaidTimeOffHours, S.SickHours);
+    INSERT(EmployeeID, SalaryID, PaidTimeOffHours, SickHours)
+    VALUES(S.EmployeeID, S.SalaryID, S.PaidTimeOffHours, S.SickHours);

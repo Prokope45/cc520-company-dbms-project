@@ -68,7 +68,9 @@ func (e *Executor) executeWithParams(ctx context.Context, procName string, param
 
 	// In go-mssqldb, LastInsertId is not supported. We need to check if this is a procedure
 	// that might return an identity (like Create) or just rows (like Get)
-	if strings.Contains(procName, "Create") || strings.Contains(procName, "Get") {
+	if strings.Contains(procName, "Create") ||
+		strings.Contains(procName, "Get") ||
+		strings.Contains(procName, "Report") {
 		rows, err := e.db.QueryContext(ctx, query)
 		if err != nil {
 			return Result{Error: fmt.Errorf("failed to execute stored procedure: %w", err)}

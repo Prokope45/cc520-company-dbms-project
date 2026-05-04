@@ -18,7 +18,7 @@ const EmployeeTable = () => {
     const [companies, setCompanies] = useState([]);
     const [roles, setRoles] = useState([
         'Intern', 'Developer I', 'Developer II', 'Developer III',
-        'Senior Engineer', 'Member', 'Manager', 'Director',
+        'Senior Engineer', 'Member', 'Manager', 'HR Manager', 'Director',
         'HR Manager', 'CFO', 'CTO', 'CHRO', 'CEO'
     ]);
     const [isModalOpen, setIsModalOpen] = useState(false);
