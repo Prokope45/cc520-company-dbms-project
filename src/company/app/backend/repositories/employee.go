@@ -13,16 +13,15 @@ import (
 	"strconv"
 
 	"cc520-company-dbms-project/src/company/app/backend/models"
-	"cc520-company-dbms-project/src/company/db/executor"
 )
 
 // EmployeeRepository handles data access for Employee entities.
 type EmployeeRepository struct {
-	executor *executor.Executor
+	executor Executor
 }
 
 // NewEmployeeRepository creates a new EmployeeRepository instance
-func NewEmployeeRepository(executor *executor.Executor) *EmployeeRepository {
+func NewEmployeeRepository(executor Executor) *EmployeeRepository {
 	return &EmployeeRepository{
 		executor: executor,
 	}

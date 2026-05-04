@@ -12,16 +12,15 @@ import (
 	"database/sql"
 
 	"cc520-company-dbms-project/src/company/app/backend/models"
-	"cc520-company-dbms-project/src/company/db/executor"
 )
 
 // DepartmentRepository handles data access for Department entities
 type DepartmentRepository struct {
-	executor *executor.Executor
+	executor Executor
 }
 
 // NewDepartmentRepository creates a new DepartmentRepository instance
-func NewDepartmentRepository(executor *executor.Executor) *DepartmentRepository {
+func NewDepartmentRepository(executor Executor) *DepartmentRepository {
 	return &DepartmentRepository{
 		executor: executor,
 	}

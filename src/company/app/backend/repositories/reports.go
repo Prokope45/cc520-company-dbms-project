@@ -10,16 +10,15 @@ import (
 	"context"
 
 	"cc520-company-dbms-project/src/company/app/backend/models"
-	"cc520-company-dbms-project/src/company/db/executor"
 )
 
 // ReportsRepository handles data access for aggregate reporting queries
 type ReportsRepository struct {
-	executor *executor.Executor
+	executor Executor
 }
 
 // NewReportsRepository creates a new ReportsRepository instance
-func NewReportsRepository(executor *executor.Executor) *ReportsRepository {
+func NewReportsRepository(executor Executor) *ReportsRepository {
 	return &ReportsRepository{
 		executor: executor,
 	}

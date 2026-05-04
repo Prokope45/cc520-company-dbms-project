@@ -16,13 +16,18 @@ import (
 	"cc520-company-dbms-project/src/company/db/executor"
 )
 
+// Executor defines the interface for executing stored procedures
+type Executor interface {
+	Execute(ctx context.Context, procedureName string, params map[string]interface{}) executor.Result
+}
+
 // CompanyRepository handles data access for Company entities
 type CompanyRepository struct {
-	executor *executor.Executor
+	executor Executor
 }
 
 // NewCompanyRepository creates a new CompanyRepository instance
-func NewCompanyRepository(executor *executor.Executor) *CompanyRepository {
+func NewCompanyRepository(executor Executor) *CompanyRepository {
 	return &CompanyRepository{
 		executor: executor,
 	}
