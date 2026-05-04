@@ -103,21 +103,21 @@ INSERT @EmployeeStaging(EmployeeID, ManagerID, PersonID, EmployeeTypeID, HireDat
 (90, 87, 90, 2, '2021-05-15', NULL),
 (91, 87, 91, 2, '2020-09-15', NULL);
 
--- SET IDENTITY_INSERT Org.Employee ON;
 MERGE Org.Employee T
 USING (SELECT * FROM @EmployeeStaging) S ON T.EmployeeID = S.EmployeeID
 WHEN MATCHED AND (
     ISNULL(T.ManagerID, -1) <> ISNULL(S.ManagerID, -1) OR
     T.PersonID <> S.PersonID OR
     T.EmployeeTypeID <> S.EmployeeTypeID OR
-    T.HireDate <> S.HireDate
+    T.HireDate <> S.HireDate OR
+    T.TerminationDate <> S.TerminationDate
 ) THEN
     UPDATE SET
         ManagerID = S.ManagerID,
         PersonID = S.PersonID,
         EmployeeTypeID = S.EmployeeTypeID,
-        HireDate = S.HireDate
+        HireDate = S.HireDate,
+        TerminationDate = S.TerminationDate
 WHEN NOT MATCHED THEN
-    INSERT(ManagerID, PersonID, EmployeeTypeID, HireDate)
-    VALUES(S.ManagerID, S.PersonID, S.EmployeeTypeID, S.HireDate);
--- SET IDENTITY_INSERT Org.Employee OFF;
+    INSERT(ManagerID, PersonID, EmployeeTypeID, HireDate, TerminationDate)
+    VALUES(S.ManagerID, S.PersonID, S.EmployeeTypeID, S.HireDate, S.TerminationDate);

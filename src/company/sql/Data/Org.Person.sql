@@ -103,7 +103,6 @@ INSERT @PersonStaging(PersonID, AddressID, FirstName, LastName, Email, Phone) VA
 (90, 90, N'Margaret', N'Sanchez', N'margaret.sanchez90@company.com', N'555-944-6004'),
 (91, 91, N'Linda', N'Taylor', N'linda.taylor91@company.com', N'555-819-8505');
 
--- SET IDENTITY_INSERT Org.Person ON;
 MERGE Org.Person T
 USING (SELECT * FROM @PersonStaging) S ON T.PersonID = S.PersonID
 WHEN MATCHED AND (
@@ -121,4 +120,3 @@ WHEN MATCHED AND (
 WHEN NOT MATCHED THEN
     INSERT(AddressID, FirstName, LastName, Email, Phone)
     VALUES(S.AddressID, S.FirstName, S.LastName, S.Email, S.Phone);
--- SET IDENTITY_INSERT Org.Person OFF;

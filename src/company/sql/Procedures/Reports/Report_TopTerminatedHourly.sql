@@ -8,7 +8,7 @@ BEGIN
         CONCAT(P.FirstName, ' ', P.LastName) AS EmployeeName
     FROM [Org].[Employee] E
         INNER JOIN [Org].[Person] P ON P.PersonID = E.PersonID
-        INNER JOIN [Org].[HourlyEmployee] HE ON HE.EmployeeID E.EmployeeID
+        INNER JOIN [Org].[HourlyEmployee] HE ON HE.EmployeeID = E.EmployeeID
     WHERE E.TerminationDate IS NOT NULL 
       AND E.TerminationDate >= @TerminationDate
     ORDER BY HE.HourlyPay DESC, E.TerminationDate DESC;
