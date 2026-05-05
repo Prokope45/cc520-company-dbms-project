@@ -2,12 +2,13 @@
 // Authors:
 // 	- Jared Paubel
 //  - OpenCode agent - Gemini 3 Pro Preview
-// Percentage written by Agent: 100%
+// Percentage written by Agent: 95%
 
 package models
 
 // DepartmentSalaryRank represents the rank of a salaried employee within their department
 type DepartmentSalaryRank struct {
+	CompanyName    string  `json:"company_name"`
 	DepartmentName string  `json:"department_name"`
 	HireMonth      int     `json:"hire_month"`
 	HireYear       int     `json:"hire_year"`

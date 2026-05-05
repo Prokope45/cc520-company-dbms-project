@@ -14,13 +14,13 @@ const ReportsTab = () => {
     const [filterText, setFilterText] = useState('');
 
     // Parameters state
-    const [hireDate, setHireDate] = useState(new Date().toISOString().split('T')[0]);
+    const [hireDate, setHireDate] = useState(new Date("05/05/2022").toISOString().split('T')[0]);
     const [terminationDate, setTerminationDate] = useState(new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0]);
 
     const reports = [
         { id: 'salary-ranks', label: 'Department Salary Ranks' },
-        { id: 'terminated-hourly', label: 'Top Terminated Hourly' },
-        { id: 'unhired-managers', label: 'Unhired With Managers' },
+        { id: 'terminated-hourly', label: 'Top Hourly Pay of Terminated Employees' },
+        { id: 'unhired-managers', label: 'Unhired Employees Assigned to Managers' },
         { id: 'highest-ceo', label: 'Highest Paid CEO' }
     ];
 
@@ -86,6 +86,7 @@ const ReportsTab = () => {
         switch (activeReport) {
             case 'salary-ranks':
                 return [
+                    { name: 'Company', selector: row => row.company_name, sortable: true },
                     { name: 'Department', selector: row => row.department_name, sortable: true },
                     { name: 'Rank', selector: row => row.salary_rank, sortable: true },
                     { name: 'Employee', selector: row => row.employee_name, sortable: true },

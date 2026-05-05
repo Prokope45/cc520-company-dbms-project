@@ -36,6 +36,7 @@ func (r *ReportsRepository) GetDepartmentSalaryRanks(ctx context.Context, hireDa
 	var reports []models.DepartmentSalaryRank
 	for _, row := range result.Rows {
 		report := models.DepartmentSalaryRank{
+			CompanyName:    safeString(row["CompanyName"]),
 			DepartmentName: safeString(row["DepartmentName"]),
 			HireMonth:      safeInt(row["HireMonth"]),
 			HireYear:       safeInt(row["HireYear"]),
