@@ -7,15 +7,14 @@ DECLARE @HourlyEmployeeStaging TABLE
 
 INSERT @HourlyEmployeeStaging(EmployeeID, HourlyPay, MaxHoursPerWeek)
 VALUES
-(7, 17.5, 20),
+(1, 17.5, 20),
 (9, 43.5, 20),
 (26, 44.5, 20),
 (27, 33, 20),
 (28, 20, 40),
 (48, 39.5, 20),
 (52, 34.5, 20),
-(57, 45.5, 20),
-(73, 44.5, 20);
+(57, 45.5, 20);
 
 MERGE [Org].HourlyEmployee T
 USING (SELECT * FROM @HourlyEmployeeStaging) S ON T.EmployeeID = S.EmployeeID
