@@ -18,7 +18,6 @@ BEGIN
         INNER JOIN [Org].[Company] C ON C.CompanyID = D.CompanyID
     WHERE E.HireDate IS NOT NULL 
         AND E.HireDate >= @HireDate
-    GROUP BY D.DepartmentID
     ORDER BY D.[Name] ASC, SalaryRank ASC;
 END
 GO

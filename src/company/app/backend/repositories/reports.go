@@ -2,7 +2,7 @@
 // Authors:
 // 	- Jared Paubel
 //  - OpenCode agent - Gemini 3 Pro Preview
-// Percentage written by Agent: 100%
+// Percentage written by Agent: 95%
 
 package repositories
 
@@ -62,6 +62,8 @@ func (r *ReportsRepository) GetTopTerminatedHourly(ctx context.Context, terminat
 	var reports []models.TopTerminatedHourly
 	for _, row := range result.Rows {
 		report := models.TopTerminatedHourly{
+			CompanyName:    safeString(row["CompanyName"]),
+			DepartmentName: safeString(row["DepartmentName"]),
 			DateTerminated: safeString(row["DateTerminated"]),
 			HourlyPay:      safeFloat64(row["HourlyPay"]),
 			EmployeeName:   safeString(row["EmployeeName"]),
@@ -82,6 +84,8 @@ func (r *ReportsRepository) GetUnhiredWithManager(ctx context.Context) ([]models
 	var reports []models.UnhiredWithManager
 	for _, row := range result.Rows {
 		report := models.UnhiredWithManager{
+			CompanyName:     safeString(row["CompanyName"]),
+			DepartmentName:  safeString(row["DepartmentName"]),
 			EmployeeName:    safeString(row["EmployeeName"]),
 			ManagerAssigned: safeString(row["ManagerAssigned"]),
 		}

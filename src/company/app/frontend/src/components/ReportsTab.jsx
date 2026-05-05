@@ -95,12 +95,16 @@ const ReportsTab = () => {
                 ];
             case 'terminated-hourly':
                 return [
+                    { name: 'CompanyName', selector: row => row.company_name, sortable: true },
+                    { name: 'DepartmentName', selector: row => row.department_name, sortable: true },
                     { name: 'Employee', selector: row => row.employee_name, sortable: true },
                     { name: 'Hourly Pay', selector: row => `$${row.hourly_pay?.toFixed(2)}`, sortable: true },
                     { name: 'Date Terminated', selector: row => row.date_terminated, sortable: true },
                 ];
             case 'unhired-managers':
                 return [
+                    { name: 'CompanyName', selector: row => row.company_name, sortable: true },
+                    { name: 'DepartmentName', selector: row => row.department_name, sortable: true },
                     { name: 'Employee', selector: row => row.employee_name, sortable: true },
                     { name: 'Manager Assigned', selector: row => row.manager_assigned, sortable: true },
                 ];

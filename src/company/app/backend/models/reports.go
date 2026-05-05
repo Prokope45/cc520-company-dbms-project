@@ -19,6 +19,8 @@ type DepartmentSalaryRank struct {
 
 // TopTerminatedHourly represents a high-earning hourly employee who recently left
 type TopTerminatedHourly struct {
+	CompanyName    string  `json:"company_name"`
+	DepartmentName string  `json:"department_name"`
 	DateTerminated string  `json:"date_terminated"`
 	HourlyPay      float64 `json:"hourly_pay"`
 	EmployeeName   string  `json:"employee_name"`
@@ -26,6 +28,8 @@ type TopTerminatedHourly struct {
 
 // UnhiredWithManager represents an employee record that has a manager but no hire date
 type UnhiredWithManager struct {
+	CompanyName     string `json:"company_name"`
+	DepartmentName  string `json:"department_name"`
 	EmployeeName    string `json:"employee_name"`
 	ManagerAssigned string `json:"manager_assigned"`
 }
