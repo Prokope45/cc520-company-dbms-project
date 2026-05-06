@@ -8,8 +8,8 @@ package repositories
 
 import (
 	"context"
-	"strconv"
 	"database/sql"
+	"strconv"
 
 	"cc520-company-dbms-project/src/company/app/backend/models"
 )
@@ -111,7 +111,6 @@ func (r *DepartmentRepository) DeleteDepartment(ctx context.Context, id int64) e
 
 	return nil
 }
-
 
 // parseDepartmentID handles both int64 and string types from SCOPE_IDENTITY()
 func (r *DepartmentRepository) parseDepartmentID(val interface{}) int64 {
