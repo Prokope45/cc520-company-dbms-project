@@ -10,7 +10,7 @@ export const reportsApi = {
         return response.data;
     },
 
-    GetDepartmentSalary_Aggregated: async (hireDate) => {
+    getDepartmentSalary_Aggregated: async (hireDate) => {
         const response = await axios.get(`${API_BASE_URL}/reports/department-salary-ranks-aggregated`, {
             params: { hireDate }
         });

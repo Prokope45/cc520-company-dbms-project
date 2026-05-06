@@ -7,7 +7,7 @@ import SearchBar from './SearchBar';
 const Table = DataTable.default ? DataTable.default : DataTable;
 
 const ReportsTab = () => {
-    const [activeReport, setActiveReport] = useState('salary-ranks');
+        const [activeReport, setActiveReport] = useState('salary-ranks-aggregated');
     const [data, setData] = useState([]);
     const [aggregatedData, setAggregatedData] = useState([]);
     const [detailedData, setDetailedData] = useState([]);
@@ -20,10 +20,6 @@ const ReportsTab = () => {
     const [terminationDate, setTerminationDate] = useState(new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0]);
 
     const reports = [
-        { id: 'salary-ranks', label: 'Department Salary Ranks' },
-        { id: 'terminated-hourly', label: 'Top Hourly Pay of Terminated Employees' },
-        { id: 'unhired-managers', label: 'Unhired Employees Assigned to Managers' },
-        { id: 'highest-ceo', label: 'Highest Paid CEO' },
         { id: 'salary-ranks-aggregated', label: 'Department Salary Ranks' },
         { id: 'terminated-hourly-aggregated', label: 'Terminated Hourly' },
         { id: 'unhired-managers-aggregated', label: 'Unhired Employees' },
@@ -37,67 +33,44 @@ const ReportsTab = () => {
         setAggregatedData([]);
         setDetailedData([]);
         try {
-            const isAggregated = activeReport.includes('-aggregated');
-            if (isAggregated) {
-                let aggResult;
-                switch (activeReport) {
-                    case 'salary-ranks-aggregated':
-                        aggResult = await reportsApi.GetDepartmentSalary_Aggregated(hireDate);
-                        break;
-                    case 'terminated-hourly-aggregated':
-                        aggResult = await reportsApi.getTopTerminatedHourly_Aggregated(terminationDate);
-                        break;
-                    case 'unhired-managers-aggregated':
-                        aggResult = await reportsApi.getUnhiredWithManager_Aggregated();
-                        break;
-                    case 'highest-ceo-aggregated':
-                        aggResult = await reportsApi.getHighestPaidCEO_Aggregated();
-                        break;
-                    default:
-                        aggResult = [];
-                }
-                setAggregatedData(aggResult);
-
-                let detailResult;
-                switch (activeReport) {
-                    case 'salary-ranks-aggregated':
-                        detailResult = await reportsApi.getDepartmentSalaryRanks(hireDate);
-                        break;
-                    case 'terminated-hourly-aggregated':
-                        detailResult = await reportsApi.getTopTerminatedHourly(terminationDate);
-                        break;
-                    case 'unhired-managers-aggregated':
-                        detailResult = await reportsApi.getUnhiredWithManager();
-                        break;
-                    case 'highest-ceo-aggregated':
-                        detailResult = await reportsApi.getHighestPaidCEO();
-                        detailResult = detailResult ? [detailResult] : [];
-                        break;
-                    default:
-                        detailResult = [];
-                }
-                setDetailedData(detailResult);
-            } else {
-                let result;
-                switch (activeReport) {
-                    case 'salary-ranks':
-                        result = await reportsApi.getDepartmentSalaryRanks(hireDate);
-                        break;
-                    case 'terminated-hourly':
-                        result = await reportsApi.getTopTerminatedHourly(terminationDate);
-                        break;
-                    case 'unhired-managers':
-                        result = await reportsApi.getUnhiredWithManager();
-                        break;
-                    case 'highest-ceo':
-                        result = await reportsApi.getHighestPaidCEO();
-                        result = result ? [result] : [];
-                        break;
-                    default:
-                        result = [];
-                }
-                setData(result);
+            let aggResult;
+            switch (activeReport) {
+                case 'salary-ranks-aggregated':
+                    aggResult = await reportsApi.getDepartmentSalary_Aggregated(hireDate);
+                    break;
+                case 'terminated-hourly-aggregated':
+                    aggResult = await reportsApi.getTopTerminatedHourly_Aggregated(terminationDate);
+                    break;
+                case 'unhired-managers-aggregated':
+                    aggResult = await reportsApi.getUnhiredWithManager_Aggregated();
+                    break;
+                case 'highest-ceo-aggregated':
+                    aggResult = await reportsApi.getHighestPaidCEO_Aggregated();
+                    break;
+                default:
+                    aggResult = [];
             }
+            setAggregatedData(aggResult);
+
+            let detailResult;
+            switch (activeReport) {
+                case 'salary-ranks-aggregated':
+                    detailResult = await reportsApi.getDepartmentSalaryRanks(hireDate);
+                    break;
+                case 'terminated-hourly-aggregated':
+                    detailResult = await reportsApi.getTopTerminatedHourly(terminationDate);
+                    break;
+                case 'unhired-managers-aggregated':
+                    detailResult = await reportsApi.getUnhiredWithManager();
+                    break;
+                case 'highest-ceo-aggregated':
+                    detailResult = await reportsApi.getHighestPaidCEO();
+                    detailResult = detailResult ? [detailResult] : [];
+                    break;
+                default:
+                    detailResult = [];
+            }
+            setDetailedData(detailResult);
         } catch (err) {
             setError(err.response?.data || err.message || 'Error fetching report');
         } finally {
@@ -113,29 +86,22 @@ const ReportsTab = () => {
         setError(null);
         setFilterText('');
         // We do NOT auto-fetch for parameter-required reports to allow users to set the date first
-        if (reportId === 'unhired-managers' || reportId === 'highest-ceo' || reportId === 'unhired-managers-aggregated' || reportId === 'highest-ceo-aggregated') {
+        if (reportId === 'unhired-managers-aggregated' || reportId === 'highest-ceo-aggregated') {
             // Auto-fetch these since they have no params
             setTimeout(() => {
                 const fetchWithoutParams = async () => {
                     setLoading(true);
                     try {
-                        if (reportId === 'unhired-managers') {
-                            const res = await reportsApi.getUnhiredWithManager();
-                            setData(res);
-                        } else if (reportId === 'unhired-managers-aggregated') {
+                        if (reportId === 'unhired-managers-aggregated') {
                             const aggRes = await reportsApi.getUnhiredWithManager_Aggregated();
                             setAggregatedData(aggRes);
                             const detRes = await reportsApi.getUnhiredWithManager();
-                            console.log(detRes)
                             setDetailedData(detRes);
                         } else if (reportId === 'highest-ceo-aggregated') {
                             const aggRes = await reportsApi.getHighestPaidCEO_Aggregated();
                             setAggregatedData(aggRes);
                             const detRes = await reportsApi.getHighestPaidCEO();
                             setDetailedData(detRes ? [detRes] : []);
-                        } else {
-                            const res = [await reportsApi.getHighestPaidCEO()].filter(Boolean);
-                            setData(res);
                         }
                     } catch (e) {
                         setError(e.message);
@@ -250,6 +216,36 @@ const ReportsTab = () => {
         }
     };
 
+    const getSummaryDescription = () => {
+        switch (activeReport) {
+            case 'salary-ranks-aggregated':
+                return 'Department-level summaries showing employee counts, average/highest/lowest salaries grouped by company and department.';
+            case 'terminated-hourly-aggregated':
+                return 'Summary of terminated hourly employees by department, including termination counts grouped by company and department.';
+            case 'unhired-managers-aggregated':
+                return 'Department-level counts of unhired employees assigned to managers, grouped by company and department.';
+            case 'highest-ceo-aggregated':
+                return 'Company-level CEO compensation summary showing CEO counts and highest salaries.';
+            default:
+                return '';
+        }
+    };
+
+    const getDetailsDescription = () => {
+        switch (activeReport) {
+            case 'salary-ranks-aggregated':
+                return 'Individual employee records ranked by salary within each department, including hire date and salary details.';
+            case 'terminated-hourly-aggregated':
+                return 'Individual terminated hourly employee records with their hourly pay rates and termination dates.';
+            case 'unhired-managers-aggregated':
+                return 'Individual records of unhired employees and their assigned managers.';
+            case 'highest-ceo-aggregated':
+                return 'Individual CEO records showing company, name, and salary details.';
+            default:
+                return '';
+        }
+    };
+
     // Global Filter Logic
     const filteredData = data.filter(item => {
         if (!filterText) return true;
@@ -273,9 +269,9 @@ const ReportsTab = () => {
             </div>
 
             {/* Parameter Inputs for specific reports */}
-            {(activeReport === 'salary-ranks' || activeReport === 'salary-ranks-aggregated' || activeReport === 'terminated-hourly' || activeReport === 'terminated-hourly-aggregated') && (
+            {(activeReport === 'salary-ranks-aggregated' || activeReport === 'terminated-hourly-aggregated') && (
                 <div className="report-filters">
-                    {(activeReport === 'salary-ranks' || activeReport === 'salary-ranks-aggregated') && (
+                    {(activeReport === 'salary-ranks-aggregated') && (
                         <div className="filter-group">
                             <label>Hired After Date:</label>
                             <input 
@@ -286,17 +282,6 @@ const ReportsTab = () => {
                         </div>
                     )}
                     
-                    {activeReport === 'terminated-hourly' && (
-                        <div className="filter-group">
-                            <label>Terminated After Date:</label>
-                            <input 
-                                type="date" 
-                                value={terminationDate} 
-                                onChange={(e) => setTerminationDate(e.target.value)} 
-                            />
-                        </div>
-                    )}
-
                     {activeReport === 'terminated-hourly-aggregated' && (
                         <div className="filter-group">
                             <label>Terminated After Date:</label>
@@ -346,7 +331,8 @@ const ReportsTab = () => {
                             </div>
 
                             <div style={{ marginBottom: '20px' }}>
-                                <h3 style={{ margin: '0 0 10px 0', color: '#555' }}>Summary</h3>
+                                <h3 style={{ margin: '0 0 6px 0', color: '#555' }}>Summary</h3>
+                                <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#777' }}>{getSummaryDescription()}</p>
                                 <Table
                                     columns={getColumns()}
                                     data={aggFilteredData}
@@ -366,7 +352,8 @@ const ReportsTab = () => {
                             </div>
 
                             <div>
-                                <h3 style={{ margin: '0 0 10px 0', color: '#555' }}>Details</h3>
+                                <h3 style={{ margin: '0 0 6px 0', color: '#555' }}>Details</h3>
+                                <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#777' }}>{getDetailsDescription()}</p>
                                 <Table
                                     columns={getDetailedColumns()}
                                     data={detFilteredData}
