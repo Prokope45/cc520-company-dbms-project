@@ -48,6 +48,28 @@ func (h *ReportsHandler) GetDepartmentSalaryRanks(w http.ResponseWriter, r *http
 	json.NewEncoder(w).Encode(reports)
 }
 
+// GetDepartmentSalary_Aggregated handles GET /reports/department-salary-ranks-aggregated
+// Query params: hireDate (required)
+func (h *ReportsHandler) GetDepartmentSalary_Aggregated(w http.ResponseWriter, r *http.Request) {
+	hireDate := r.URL.Query().Get("hireDate")
+	if hireDate == "" {
+		http.Error(w, "hireDate query parameter is required", http.StatusBadRequest)
+		return
+	}
+
+	reports, err := h.repo.GetDepartmentSalary_Aggregated(r.Context(), hireDate)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if reports == nil {
+		reports = make([]models.DepartmentSalary_Aggregated, 0)
+	}
+	json.NewEncoder(w).Encode(reports)
+}
+
 // GetTopTerminatedHourly handles GET /reports/top-terminated-hourly
 // Query params: terminationDate (required)
 func (h *ReportsHandler) GetTopTerminatedHourly(w http.ResponseWriter, r *http.Request) {
@@ -70,6 +92,28 @@ func (h *ReportsHandler) GetTopTerminatedHourly(w http.ResponseWriter, r *http.R
 	json.NewEncoder(w).Encode(reports)
 }
 
+// GetTopTerminatedHourly_Aggregated handles GET /reports/top-terminated-hourly-aggregated
+// Query params: terminationDate (required)
+func (h *ReportsHandler) GetTopTerminatedHourly_Aggregated(w http.ResponseWriter, r *http.Request) {
+	terminationDate := r.URL.Query().Get("terminationDate")
+	if terminationDate == "" {
+		http.Error(w, "terminationDate query parameter is required", http.StatusBadRequest)
+		return
+	}
+
+	reports, err := h.repo.GetTopTerminatedHourly_Aggregated(r.Context(), terminationDate)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if reports == nil {
+		reports = make([]models.TopTerminatedHourly_Aggregated, 0)
+	}
+	json.NewEncoder(w).Encode(reports)
+}
+
 // GetUnhiredWithManager handles GET /reports/unhired-with-manager
 func (h *ReportsHandler) GetUnhiredWithManager(w http.ResponseWriter, r *http.Request) {
 	reports, err := h.repo.GetUnhiredWithManager(r.Context())
@@ -81,6 +125,21 @@ func (h *ReportsHandler) GetUnhiredWithManager(w http.ResponseWriter, r *http.Re
 	w.Header().Set("Content-Type", "application/json")
 	if reports == nil {
 		reports = make([]models.UnhiredWithManager, 0)
+	}
+	json.NewEncoder(w).Encode(reports)
+}
+
+// GetUnhiredWithManager_Aggregated handles GET /reports/unhired-with-manager-aggregated
+func (h *ReportsHandler) GetUnhiredWithManager_Aggregated(w http.ResponseWriter, r *http.Request) {
+	reports, err := h.repo.GetUnhiredWithManager_Aggregated(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if reports == nil {
+		reports = make([]models.UnhiredWithManager_Aggregated, 0)
 	}
 	json.NewEncoder(w).Encode(reports)
 }
@@ -100,4 +159,19 @@ func (h *ReportsHandler) GetHighestPaidCEO(w http.ResponseWriter, r *http.Reques
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(report)
+}
+
+// GetHighestPaidCEO_Aggregated handles GET /reports/highest-paid-ceo-aggregated
+func (h *ReportsHandler) GetHighestPaidCEO_Aggregated(w http.ResponseWriter, r *http.Request) {
+	reports, err := h.repo.GetHighestPaidCEO_Aggregated(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if reports == nil {
+		reports = make([]models.HighestPaidCEO_Aggregated, 0)
+	}
+	json.NewEncoder(w).Encode(reports)
 }

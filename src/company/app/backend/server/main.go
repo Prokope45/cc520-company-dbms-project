@@ -96,6 +96,12 @@ func main() {
 	r.HandleFunc("/reports/unhired-with-manager", reportsHandler.GetUnhiredWithManager).Methods(http.MethodGet)
 	r.HandleFunc("/reports/highest-paid-ceo", reportsHandler.GetHighestPaidCEO).Methods(http.MethodGet)
 
+	// API routes - Aggregated Reports
+	r.HandleFunc("/reports/department-salary-ranks-aggregated", reportsHandler.GetDepartmentSalary_Aggregated).Methods(http.MethodGet)
+	r.HandleFunc("/reports/highest-paid-ceo-aggregated", reportsHandler.GetHighestPaidCEO_Aggregated).Methods(http.MethodGet)
+	r.HandleFunc("/reports/top-terminated-hourly-aggregated", reportsHandler.GetTopTerminatedHourly_Aggregated).Methods(http.MethodGet)
+	r.HandleFunc("/reports/unhired-with-manager-aggregated", reportsHandler.GetUnhiredWithManager_Aggregated).Methods(http.MethodGet)
+
 	// Setup CORS middleware
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173", "http://127.0.0.1:5173"},

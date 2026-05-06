@@ -50,6 +50,31 @@ func (r *ReportsRepository) GetDepartmentSalaryRanks(ctx context.Context, hireDa
 	return reports, nil
 }
 
+// GetDepartmentSalary_Aggregated gets aggregated salaries by department since a given hire date
+func (r *ReportsRepository) GetDepartmentSalary_Aggregated(ctx context.Context, hireDate string) ([]models.DepartmentSalary_Aggregated, error) {
+	result := r.executor.Execute(ctx, "Report_DepartmentSalary_Aggregated", map[string]any{
+		"HireDate": hireDate,
+	})
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var reports []models.DepartmentSalary_Aggregated
+	for _, row := range result.Rows {
+		report := models.DepartmentSalary_Aggregated{
+			CompanyName:    safeString(row["CompanyName"]),
+			DepartmentName: safeString(row["DepartmentName"]),
+			EmployeeCount:  safeInt(row["EmployeeCount"]),
+			AverageSalary:  safeFloat64(row["AverageSalary"]),
+			HighestSalary:  safeFloat64(row["HighestSalary"]),
+			LowestSalary:   safeFloat64(row["LowestSalary"]),
+		}
+		reports = append(reports, report)
+	}
+
+	return reports, nil
+}
+
 // GetTopTerminatedHourly gets the top 5 highest paid hourly employees who left since a date
 func (r *ReportsRepository) GetTopTerminatedHourly(ctx context.Context, terminationDate string) ([]models.TopTerminatedHourly, error) {
 	result := r.executor.Execute(ctx, "Report_TopTerminatedHourly", map[string]any{
@@ -67,6 +92,30 @@ func (r *ReportsRepository) GetTopTerminatedHourly(ctx context.Context, terminat
 			DateTerminated: safeString(row["DateTerminated"]),
 			HourlyPay:      safeFloat64(row["HourlyPay"]),
 			EmployeeName:   safeString(row["EmployeeName"]),
+		}
+		reports = append(reports, report)
+	}
+
+	return reports, nil
+}
+
+// GetTopTerminatedHourly_Aggregated gets aggregated terminated hourly employee data by department
+func (r *ReportsRepository) GetTopTerminatedHourly_Aggregated(ctx context.Context, terminationDate string) ([]models.TopTerminatedHourly_Aggregated, error) {
+	result := r.executor.Execute(ctx, "Report_TopTerminatedHourly_Aggregated", map[string]any{
+		"TerminationDate": terminationDate,
+	})
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var reports []models.TopTerminatedHourly_Aggregated
+	for _, row := range result.Rows {
+		report := models.TopTerminatedHourly_Aggregated{
+			CompanyName:            safeString(row["CompanyName"]),
+			DepartmentName:         safeString(row["DepartmentName"]),
+			TerminatedCount:        safeInt(row["TerminatedCount"]),
+			AvgTerminatedHourlyPay: safeFloat64(row["AvgTerminatedHourlyPay"]),
+			LatestTerminationDate:  safeString(row["LatestTerminationDate"]),
 		}
 		reports = append(reports, report)
 	}
@@ -95,6 +144,27 @@ func (r *ReportsRepository) GetUnhiredWithManager(ctx context.Context) ([]models
 	return reports, nil
 }
 
+// GetUnhiredWithManager_Aggregated gets aggregated unhired employee data by department
+func (r *ReportsRepository) GetUnhiredWithManager_Aggregated(ctx context.Context) ([]models.UnhiredWithManager_Aggregated, error) {
+	result := r.executor.Execute(ctx, "Report_UnhiredWithManager_Aggregated", nil)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var reports []models.UnhiredWithManager_Aggregated
+	for _, row := range result.Rows {
+		report := models.UnhiredWithManager_Aggregated{
+			CompanyName:    safeString(row["CompanyName"]),
+			DepartmentName: safeString(row["DepartmentName"]),
+			UnhiredCount:   safeInt(row["UnhiredCount"]),
+			ManagerNames:   safeString(row["ManagerNames"]),
+		}
+		reports = append(reports, report)
+	}
+
+	return reports, nil
+}
+
 // GetHighestPaidCEO gets the company with the highest paid CEO
 func (r *ReportsRepository) GetHighestPaidCEO(ctx context.Context) (*models.HighestPaidCEO, error) {
 	result := r.executor.Execute(ctx, "Report_HighestPaidCEO", nil)
@@ -114,4 +184,24 @@ func (r *ReportsRepository) GetHighestPaidCEO(ctx context.Context) (*models.High
 	}
 
 	return &report, nil
+}
+
+// GetHighestPaidCEO_Aggregated gets aggregated CEO salary data per company
+func (r *ReportsRepository) GetHighestPaidCEO_Aggregated(ctx context.Context) ([]models.HighestPaidCEO_Aggregated, error) {
+	result := r.executor.Execute(ctx, "Report_HighestPaidCEO_Aggregated", nil)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var reports []models.HighestPaidCEO_Aggregated
+	for _, row := range result.Rows {
+		report := models.HighestPaidCEO_Aggregated{
+			CompanyName:      safeString(row["CompanyName"]),
+			CEOCount:         safeInt(row["CEOCount"]),
+			HighestCEOSalary: safeFloat64(row["HighestCEOSalary"]),
+		}
+		reports = append(reports, report)
+	}
+
+	return reports, nil
 }
