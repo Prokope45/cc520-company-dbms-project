@@ -153,14 +153,13 @@ Other available database operations:
 
 ### 4. Run the Application Servers
 
-Start both the Go Backend API and the React Frontend development servers concurrently using the provided script:
+Start both the Go Backend API and the React Frontend development servers concurrently by going to the debugger and run `Fullstack` in the dropdown.
+You can also run each of these in separate terminals to achieve the same:
 
-```bash
-./scripts/run_app.sh
-```
-
-- **Backend API:** Runs on `http://localhost:8080`
-- **Frontend App:** Typically runs on `http://localhost:5173` (check terminal output from Vite)
+- `go run src/company/app/backend/server/main.go`
+  - **Backend API:** Runs on `http://localhost:8080`
+- `cd src/company/app/frontend && npm run dev`
+  - **Frontend App:** Typically runs on `http://localhost:5173` (check terminal output from Vite)
 
 Navigate to the Frontend App URL in your web browser to interact with the Company Management Database System.
 

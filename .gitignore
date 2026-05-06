@@ -304,8 +304,6 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
-.vscode
-
 G:/workspace/hack-kstate/website-django/discord_bot/discord_js/*.json
 G:/workspace/hack-kstate/website-django/discord_bot/discord_js/*.txt
 website-django/discord_bot/discord_js/authDict.json
