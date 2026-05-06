@@ -40,9 +40,16 @@ BEGIN
             [State],
             ZipCode
         )
-        VALUES (@Street, @AddressLineTwo, @City, @State, @ZipCode);
+        VALUES (
+            @Street,
+            @AddressLineTwo,
+            @City,
+            @State,
+            @ZipCode
+        );
 
         -- Insert Person
+        DECLARE @AddressID INT = SCOPE_IDENTITY();
         INSERT INTO [Org].[Person] (
             AddressID,
             FirstName,
@@ -51,24 +58,23 @@ BEGIN
             Phone
         )
         VALUES (
-            SCOPE_IDENTITY(),
+            @AddressID,
             @FirstName,
             @LastName,
             @Email,
             @Phone
         );
 
-        DECLARE @PersonID INT;
-        SET @PersonID = SCOPE_IDENTITY();
-
         -- Get EmployeeTypeID
-        DECLARE @EmployeeTypeID INT;
-        SELECT @EmployeeTypeID = EmployeeTypeID
-            FROM [Org].[EmployeeType]
-        WHERE [Name] = @StatusType;
+        DECLARE @EmployeeTypeID INT = (
+            SELECT EmployeeTypeID
+                FROM [Org].[EmployeeType]
+            WHERE [Name] = @StatusType
+        );
 
         -- Insert Employee
         -- Use provided HireDate or default to GETDATE()
+        DECLARE @PersonID INT = SCOPE_IDENTITY();
         DECLARE @ActualHireDate DATETIME2 = ISNULL(@HireDate, GETDATE());
 
         INSERT INTO [Org].[Employee] (
@@ -84,8 +90,7 @@ BEGIN
             @ActualHireDate
         );
 
-        DECLARE @EmployeeID INT;
-        SET @EmployeeID = SCOPE_IDENTITY();
+        DECLARE @EmployeeID INT = SCOPE_IDENTITY();
 
         -- Insert Pay Structure Details
         IF @StatusType = 'Hourly'
@@ -135,10 +140,11 @@ BEGIN
         END
 
         -- Insert Role/Department mapping
-        DECLARE @RoleID INT;
-        SELECT @RoleID = RoleID
-            FROM [Org].[Role]
-        WHERE [Name] = @RoleTitle;
+        DECLARE @RoleID INT = (
+            SELECT RoleID
+                FROM [Org].[Role]
+            WHERE [Name] = @RoleTitle
+        );
 
         IF @RoleID IS NOT NULL AND @DepartmentID IS NOT NULL
         BEGIN

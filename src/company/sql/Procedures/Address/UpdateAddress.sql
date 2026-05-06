@@ -7,7 +7,7 @@ CREATE PROCEDURE [Org].[sp_UpdateAddress]
     @ZipCode NVARCHAR(20)
 AS
 BEGIN
-    UPDATE [Address]
+    UPDATE [Org].[Address]
     SET [AddressLineOne] = @AddressLineOne,
         [AddressLineTwo] = @AddressLineTwo,
         [CityName] = @CityName,

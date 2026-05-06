@@ -102,12 +102,13 @@ INSERT @SalaryStaging(SalaryID, BaseSalary, Bonus, Deductions, EffectiveFrom, Ef
 (90, 212700, 15952, 31905.0, '2020-01-01', '2029-12-31'),
 (91, 230100, 17257, 34515.0, '2020-01-01', '2029-12-31');
 
-MERGE Org.Salary T
-USING (SELECT * FROM @SalaryStaging) S ON T.SalaryID = S.SalaryID
+MERGE [Org].Salary T
+USING (SELECT * FROM @SalaryStaging) S
+    ON T.SalaryID = S.SalaryID
 WHEN MATCHED AND (
-    T.BaseSalary <> S.BaseSalary OR
-    T.Bonus <> S.Bonus OR
-    T.Deductions <> S.Deductions
+    T.BaseSalary <> S.BaseSalary
+    OR T.Bonus <> S.Bonus
+    OR T.Deductions <> S.Deductions
 ) THEN
     UPDATE SET
         BaseSalary = S.BaseSalary,

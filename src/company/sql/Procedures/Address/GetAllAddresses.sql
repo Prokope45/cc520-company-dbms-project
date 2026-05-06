@@ -8,6 +8,6 @@ BEGIN
         CityName,
         [State],
         ZipCode
-    FROM [Address]
+    FROM [Org].[Address]
 END
 GO

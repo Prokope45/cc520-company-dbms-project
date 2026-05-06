@@ -30,15 +30,17 @@ BEGIN
         BEGIN TRANSACTION;
 
         -- Get related IDs
-        DECLARE @PersonID INT;
-        SELECT @PersonID = PersonID
-            FROM [Org].[Employee]
-        WHERE EmployeeID = @EmployeeID;
+        DECLARE @PersonID INT = (
+            SELECT PersonID
+                FROM [Org].[Employee]
+            WHERE EmployeeID = @EmployeeID
+        );
 
-        DECLARE @AddressID INT;
-        SELECT @AddressID = AddressID
-            FROM [Org].[Person]
-        WHERE PersonID = @PersonID;
+        DECLARE @AddressID INT = (
+            SELECT AddressID
+                FROM [Org].[Person]
+            WHERE PersonID = @PersonID
+        );
 
         -- Update Address
         UPDATE [Org].[Address]
@@ -58,10 +60,11 @@ BEGIN
         WHERE PersonID = @PersonID;
 
         -- Get new EmployeeTypeID
-        DECLARE @NewEmployeeTypeID INT;
-        SELECT @NewEmployeeTypeID = EmployeeTypeID
-            FROM [Org].[EmployeeType]
-        WHERE [Name] = @StatusType;
+        DECLARE @NewEmployeeTypeID INT = (
+            SELECT EmployeeTypeID
+                FROM [Org].[EmployeeType]
+            WHERE [Name] = @StatusType
+        );
 
         -- Update Employee (Manager & Type)
         UPDATE [Org].[Employee]
@@ -75,6 +78,7 @@ BEGIN
             -- Clean up Salary data if it exists for employee
             DELETE FROM [Org].[SalaryEmployee]
             WHERE EmployeeID = @EmployeeID;
+
             DELETE FROM [Org].[Salary]
             WHERE SalaryID = @EmployeeID;
 

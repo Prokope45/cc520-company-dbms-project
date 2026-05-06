@@ -6,16 +6,19 @@ BEGIN
         BEGIN TRANSACTION;
 
         -- Get PersonID and AddressID before deletion
-        DECLARE @PersonID INT;
-        SELECT @PersonID = PersonID
-            FROM [Org].[Employee]
-        WHERE EmployeeID = @EmployeeID;
+        DECLARE @PersonID INT = (
+            SELECT PersonID
+                FROM [Org].[Employee]
+            WHERE EmployeeID = @EmployeeID
+        );
 
         DECLARE @AddressID INT;
         IF @PersonID IS NOT NULL
-            SELECT @AddressID = AddressID
-                FROM [Org].[Person]
-            WHERE PersonID = @PersonID;
+            SET @AddressID = (
+                SELECT AddressID
+                    FROM [Org].[Person]
+                WHERE PersonID = @PersonID
+            );
 
         -- Remove DER mapping
         DELETE FROM [Org].[DepEmpRole]

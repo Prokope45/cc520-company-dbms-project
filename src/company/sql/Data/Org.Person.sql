@@ -102,14 +102,15 @@ INSERT @PersonStaging(PersonID, AddressID, FirstName, LastName, Email, Phone) VA
 (90, 90, N'Margaret', N'Sanchez', N'margaret.sanchez90@company.com', N'555-944-6004'),
 (91, 91, N'Linda', N'Taylor', N'linda.taylor91@company.com', N'555-819-8505');
 
-MERGE Org.Person T
-USING (SELECT * FROM @PersonStaging) S ON T.PersonID = S.PersonID
+MERGE [Org].Person T
+USING (SELECT * FROM @PersonStaging) S
+    ON T.PersonID = S.PersonID
 WHEN MATCHED AND (
-    T.AddressID <> S.AddressID OR
-    T.FirstName <> S.FirstName OR
-    T.LastName <> S.LastName OR
-    T.Email <> S.Email OR
-    T.Phone <> S.Phone
+    T.AddressID <> S.AddressID
+    OR T.FirstName <> S.FirstName
+    OR T.LastName <> S.LastName
+    OR T.Email <> S.Email
+    OR T.Phone <> S.Phone
 ) THEN UPDATE SET
     AddressID = S.AddressID,
     FirstName = S.FirstName,

@@ -20,12 +20,13 @@ VALUES
 (N'CHRO', N'Chief Human Resources Officer; reports to CEO'),
 (N'CEO', N'Chief Executive Officer');
 
-MERGE [Org].Role T
-USING (SELECT * FROM @RoleStaging) S ON T.Name = S.Name
+MERGE [Org].[Role] T
+USING (SELECT * FROM @RoleStaging) S
+    ON T.[Name] = S.[Name]
 WHEN MATCHED AND (
     T.Description <> S.Description
 ) THEN
     UPDATE SET [Description] = S.Description
 WHEN NOT MATCHED THEN
     INSERT([Name], [Description])
-    VALUES(S.Name, S.Description);
+    VALUES(S.[Name], S.Description);

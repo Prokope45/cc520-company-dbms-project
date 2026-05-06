@@ -1,4 +1,4 @@
-IF OBJECT_ID(N'Org.EmployeeType') IS NULL
+IF OBJECT_ID(N'[Org].EmployeeType') IS NULL
 BEGIN
     CREATE TABLE [Org].[EmployeeType]
     (

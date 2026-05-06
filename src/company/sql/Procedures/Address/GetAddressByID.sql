@@ -9,7 +9,7 @@ BEGIN
         CityName,
         [State],
         ZipCode
-    FROM [Address]
+    FROM [Org].[Address]
     WHERE AddressID = @AddressID
 END
 GO

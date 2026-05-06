@@ -1,4 +1,4 @@
-IF OBJECT_ID(N'Org.Salary') IS NULL
+IF OBJECT_ID(N'[Org].Salary') IS NULL
 BEGIN
     CREATE TABLE [Org].[Salary] (
         [SalaryID] INT NOT NULL PRIMARY KEY,

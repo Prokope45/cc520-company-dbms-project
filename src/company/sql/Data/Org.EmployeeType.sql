@@ -9,11 +9,12 @@ INSERT @EmployeeTypeStaging([Name], [Description]) VALUES
 (N'Hourly', N'Hourly paid employee');
 
 MERGE [Org].EmployeeType T
-USING (SELECT * FROM @EmployeeTypeStaging) S ON T.Name = S.Name
+USING (SELECT * FROM @EmployeeTypeStaging) S
+    ON T.[Name] = S.[Name]
 WHEN MATCHED AND (
     T.Description <> S.Description
 ) THEN
     UPDATE SET [Description] = S.Description
 WHEN NOT MATCHED THEN
     INSERT([Name], [Description])
-    VALUES(S.Name, S.Description);
+    VALUES(S.[Name], S.Description);

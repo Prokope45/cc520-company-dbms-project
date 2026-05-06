@@ -24,12 +24,14 @@ INSERT @DepartmentStaging(CompanyID, [Name], [Description]) VALUES
 (3, N'Sales', N'Sales Department');
 
 MERGE [Org].Department T
-USING (SELECT * FROM @DepartmentStaging) S ON T.CompanyID = S.CompanyID AND T.Name = S.Name
+USING (SELECT * FROM @DepartmentStaging) S
+    ON T.CompanyID = S.CompanyID
+    AND T.[Name] = S.[Name]
 WHEN MATCHED AND (
-    T.Name <> S.Name OR
-    T.Description <> S.Description
+    T.[Name] <> S.[Name]
+    OR T.Description <> S.Description
 ) THEN
-    UPDATE SET [Name] = S.Name, [Description] = S.Description
+    UPDATE SET [Name] = S.[Name], [Description] = S.Description
 WHEN NOT MATCHED THEN
     INSERT(CompanyID, [Name], [Description])
-    VALUES(S.CompanyID, S.Name, S.Description);
+    VALUES(S.CompanyID, S.[Name], S.Description);

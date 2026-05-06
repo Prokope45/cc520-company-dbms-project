@@ -12,12 +12,13 @@ INSERT @CompanyStaging(CompanyID, [Name], CreatedDate) VALUES
 (3, N'Nexus Solutions', GETDATE());
 
 MERGE [Org].Company T
-USING (SELECT * FROM @CompanyStaging) S ON T.CompanyID = S.CompanyID
+USING (SELECT * FROM @CompanyStaging) S
+    ON T.CompanyID = S.CompanyID
 WHEN MATCHED AND (
-    T.Name <> S.Name OR
-    T.CreatedDate <> S.CreatedDate
+    T.[Name] <> S.[Name]
+    OR T.CreatedDate <> S.CreatedDate
 ) THEN
-    UPDATE SET [Name] = S.Name, CreatedDate = S.CreatedDate
+    UPDATE SET [Name] = S.[Name], CreatedDate = S.CreatedDate
 WHEN NOT MATCHED THEN
     INSERT([Name], CreatedDate)
-    VALUES(S.Name, S.CreatedDate);
+    VALUES(S.[Name], S.CreatedDate);

@@ -1,4 +1,4 @@
-IF OBJECT_ID(N'Org.Employee') IS NULL
+IF OBJECT_ID(N'[Org].Employee') IS NULL
 BEGIN
     CREATE TABLE [Org].[Employee]
     (
@@ -9,11 +9,11 @@ BEGIN
         [HireDate] DATETIME2 NULL,
         [TerminationDate] DATETIME2 NULL,
         CONSTRAINT [FK_Employee_Manager] FOREIGN KEY ([ManagerID])
-            REFERENCES Org.[Employee]([EmployeeID]),
+            REFERENCES [Org].[Employee]([EmployeeID]),
         CONSTRAINT [FK_Employee_Person] FOREIGN KEY ([PersonID])
-            REFERENCES Org.[Person]([PersonID]),
+            REFERENCES [Org].[Person]([PersonID]),
         CONSTRAINT [FK_Employee_EmployeeType] FOREIGN KEY ([EmployeeTypeID])
-            REFERENCES Org.[EmployeeType]([EmployeeTypeID]),
+            REFERENCES [Org].[EmployeeType]([EmployeeTypeID]),
         CONSTRAINT [UK_Employee_PersonID] UNIQUE ([PersonID]),
         CONSTRAINT [UK_Employee_EmployeeID] UNIQUE ([EmployeeID]),
         CONSTRAINT [CK_Employee_HireDate_NotNull_Salaried] CHECK (

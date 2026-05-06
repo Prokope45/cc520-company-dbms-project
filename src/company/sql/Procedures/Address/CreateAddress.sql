@@ -6,9 +6,21 @@ CREATE PROCEDURE [Org].[sp_CreateAddress]
     @ZipCode NVARCHAR(20)
 AS
 BEGIN
-    INSERT INTO [Address] ([AddressLineOne], [AddressLineTwo], [CityName], [State], [ZipCode])
-    VALUES (@AddressLineOne, @AddressLineTwo, @CityName, @State, @ZipCode)
-    
+    INSERT INTO [Org].[Address] (
+        [AddressLineOne],
+        [AddressLineTwo],
+        [CityName],
+        [State],
+        [ZipCode]
+    )
+    VALUES (
+        @AddressLineOne,
+        @AddressLineTwo,
+        @CityName,
+        @State,
+        @ZipCode
+    )
+
     SELECT SCOPE_IDENTITY() AS AddressID
 END
 GO

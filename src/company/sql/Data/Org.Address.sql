@@ -102,8 +102,9 @@ INSERT @AddressStaging(AddressID, AddressLineOne, AddressLineTwo, CityName, [Sta
 (90, N'9713 Pine Ave', NULL, N'Seattle', N'CA', N'98288'),
 (91, N'6745 Oak Ln', NULL, N'San Francisco', N'TX', N'98997');
 
-MERGE [Org].Address T
-USING (SELECT * FROM @AddressStaging) S ON T.AddressID = S.AddressID
+MERGE [Org].[Address] T
+USING (SELECT * FROM @AddressStaging) S
+    ON T.AddressID = S.AddressID
 WHEN MATCHED AND (
     T.AddressLineOne <> S.AddressLineOne
     OR T.AddressLineTwo <> S.AddressLineTwo

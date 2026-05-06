@@ -99,12 +99,13 @@ INSERT @SalaryEmployeeStaging(EmployeeID, SalaryID, PaidTimeOffHours, SickHours)
 (91, 91, 176, 91);
 
 
-MERGE Org.SalaryEmployee T
-USING (SELECT * FROM @SalaryEmployeeStaging) S ON T.EmployeeID = S.EmployeeID
+MERGE [Org].SalaryEmployee T
+USING (SELECT * FROM @SalaryEmployeeStaging) S
+    ON T.EmployeeID = S.EmployeeID
 WHEN MATCHED AND (
-    T.SalaryID <> S.SalaryID OR
-    T.PaidTimeOffHours <> S.PaidTimeOffHours OR
-    T.SickHours <> S.SickHours
+    T.SalaryID <> S.SalaryID
+    OR T.PaidTimeOffHours <> S.PaidTimeOffHours
+    OR T.SickHours <> S.SickHours
 ) THEN
     UPDATE SET
         SalaryID = S.SalaryID,

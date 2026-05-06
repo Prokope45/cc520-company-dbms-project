@@ -18,8 +18,11 @@ VALUES
 (57, 45.5, 20);
 
 MERGE [Org].HourlyEmployee T
-USING (SELECT * FROM @HourlyEmployeeStaging) S ON T.EmployeeID = S.EmployeeID
-WHEN MATCHED AND (T.HourlyPay <> S.HourlyPay OR T.MaxHoursPerWeek <> S.MaxHoursPerWeek
+USING (SELECT * FROM @HourlyEmployeeStaging) S
+    ON T.EmployeeID = S.EmployeeID
+WHEN MATCHED AND (
+    T.HourlyPay <> S.HourlyPay
+    OR T.MaxHoursPerWeek <> S.MaxHoursPerWeek
 ) THEN
     UPDATE SET
         HourlyPay = S.HourlyPay,

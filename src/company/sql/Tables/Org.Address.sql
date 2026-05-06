@@ -1,4 +1,4 @@
-IF OBJECT_ID(N'Org.Address') IS NULL
+IF OBJECT_ID(N'[Org].Address') IS NULL
 BEGIN
     CREATE TABLE [Org].[Address] (
         [AddressID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
