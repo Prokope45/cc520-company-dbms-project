@@ -23,7 +23,9 @@ CREATE PROCEDURE [Org].[sp_UpdateEmployeeProfile]
     @Bonus DECIMAL(18,2) = 0,
     @Deductions DECIMAL(18,2) = 0,
     @PaidTimeOffHours INT = 0,
-    @SickHours INT = 0
+    @SickHours INT = 0,
+    @EffectiveFrom DATETIME2 = NULL,
+    @EffectiveTo DATETIME2 = NULL
 AS
 BEGIN
     BEGIN TRY
@@ -117,9 +119,11 @@ BEGIN
                 WHERE SalaryID = @EmployeeID
             )
                 UPDATE [Org].[Salary]
-                SET BaseSalary = @BaseSalary,
-                    Bonus = @Bonus,
-                    Deductions = @Deductions
+                SET BaseSalary = ISNULL(@BaseSalary, BaseSalary),
+                    Bonus = ISNULL(@Bonus, Bonus),
+                    Deductions = ISNULL(@Deductions, Deductions),
+                    EffectiveFrom = ISNULL(@EffectiveFrom, EffectiveFrom),
+                    EffectiveTo = ISNULL(@EffectiveTo, EffectiveTo)
                 WHERE SalaryID = @EmployeeID;
             ELSE
                 INSERT INTO [Org].[Salary] (
@@ -134,8 +138,8 @@ BEGIN
                     @BaseSalary,
                     @Bonus,
                     @Deductions,
-                    GETDATE(),
-                    DATEADD(year, 1, GETDATE())
+                    ISNULL(@EffectiveFrom, GETDATE()),
+                    ISNULL(@EffectiveTo, DATEADD(year, 1, GETDATE()))
                 );
 
             -- Update or Insert SalaryEmployee data

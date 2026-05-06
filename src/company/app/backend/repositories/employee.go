@@ -141,6 +141,12 @@ func (r *EmployeeRepository) UpdateEmployee(ctx context.Context, emp models.Empl
 		params["Deductions"] = emp.Deductions
 		params["PaidTimeOffHours"] = emp.PaidTimeOffHours
 		params["SickHours"] = emp.SickHours
+		if emp.EffectiveFrom != "" {
+			params["EffectiveFrom"] = emp.EffectiveFrom
+		}
+		if emp.EffectiveTo != "" {
+			params["EffectiveTo"] = emp.EffectiveTo
+		}
 	}
 
 	result := r.executor.Execute(ctx, "UpdateEmployeeProfile", params)

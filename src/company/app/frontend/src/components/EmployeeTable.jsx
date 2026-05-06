@@ -418,12 +418,18 @@ const EmployeeTable = () => {
                                     </div>
                                     <div className="form-group row">
                                         <div className="col">
-                                            <label>PTO Hours:</label>
-                                            <input className="form-control" type="number" name="paid_time_off_hours" value={currentEmployee.paid_time_off_hours || 0} onChange={handleInputChange}  disabled={isReadOnly} />
-                                        </div>
-                                        <div className="col">
                                             <label>Sick Hours:</label>
                                             <input className="form-control" type="number" name="sick_hours" value={currentEmployee.sick_hours || 0} onChange={handleInputChange}  disabled={isReadOnly} />
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <div className="col">
+                                            <label>Effective From:</label>
+                                            <input className="form-control" type="date" name="effective_from" value={currentEmployee.effective_from || ''} onChange={handleInputChange} disabled={isReadOnly} />
+                                        </div>
+                                        <div className="col">
+                                            <label>Effective To:</label>
+                                            <input className="form-control" type="date" name="effective_to" value={currentEmployee.effective_to || ''} onChange={handleInputChange} disabled={isReadOnly} />
                                         </div>
                                     </div>
                                 </>
