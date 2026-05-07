@@ -9,7 +9,8 @@ BEGIN
         CONSTRAINT [FK_DepEmpRole_Role] FOREIGN KEY ([RoleID])
             REFERENCES [Org].[Role]([RoleID]),
         CONSTRAINT [FK_DepEmpRole_Department] FOREIGN KEY ([DepartmentID])
-            REFERENCES [Org].[Department]([DepartmentID]),
+            REFERENCES [Org].[Department]([DepartmentID])
+            ON DELETE CASCADE,
         CONSTRAINT [FK_DepEmpRole_Employee] FOREIGN KEY ([EmployeeID])
             REFERENCES [Org].[Employee]([EmployeeID])
     );
