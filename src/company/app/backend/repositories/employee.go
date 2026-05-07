@@ -82,6 +82,13 @@ func (r *EmployeeRepository) CreateEmployee(ctx context.Context, emp models.Empl
 	}
 	if emp.HireDate != "" {
 		params["HireDate"] = emp.HireDate
+	} else {
+		params["HireDate"] = nil
+	}
+	if emp.TerminationDate != "" {
+		params["TerminationDate"] = emp.TerminationDate
+	} else {
+		params["TerminationDate"] = nil
 	}
 	if emp.StatusType == "Hourly" {
 		params["HourlyPay"] = emp.HourlyPay
@@ -94,9 +101,13 @@ func (r *EmployeeRepository) CreateEmployee(ctx context.Context, emp models.Empl
 		params["SickHours"] = emp.SickHours
 		if emp.EffectiveFrom != "" {
 			params["EffectiveFrom"] = emp.EffectiveFrom
+		} else {
+			params["EffectiveFrom"] = nil
 		}
 		if emp.EffectiveTo != "" {
 			params["EffectiveTo"] = emp.EffectiveTo
+		} else {
+			params["EffectiveTo"] = nil
 		}
 	}
 
@@ -132,6 +143,16 @@ func (r *EmployeeRepository) UpdateEmployee(ctx context.Context, emp models.Empl
 	if emp.ManagerID != nil {
 		params["ManagerID"] = *emp.ManagerID
 	}
+	if emp.HireDate != "" {
+		params["HireDate"] = emp.HireDate
+	} else {
+		params["HireDate"] = nil
+	}
+	if emp.TerminationDate != "" {
+		params["TerminationDate"] = emp.TerminationDate
+	} else {
+		params["TerminationDate"] = nil
+	}
 	if emp.StatusType == "Hourly" {
 		params["HourlyPay"] = emp.HourlyPay
 		params["MaxHoursPerWeek"] = emp.MaxHoursPerWeek
@@ -143,9 +164,13 @@ func (r *EmployeeRepository) UpdateEmployee(ctx context.Context, emp models.Empl
 		params["SickHours"] = emp.SickHours
 		if emp.EffectiveFrom != "" {
 			params["EffectiveFrom"] = emp.EffectiveFrom
+		} else {
+			params["EffectiveFrom"] = nil
 		}
 		if emp.EffectiveTo != "" {
 			params["EffectiveTo"] = emp.EffectiveTo
+		} else {
+			params["EffectiveTo"] = nil
 		}
 	}
 

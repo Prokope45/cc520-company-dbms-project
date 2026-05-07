@@ -13,6 +13,7 @@ CREATE PROCEDURE [Org].[sp_CreateEmployeeProfile]
     @RoleTitle NVARCHAR(100),
     @ManagerID INT = NULL,
     @HireDate DATETIME2 = NULL,
+    @TerminationDate DATETIME2 = NULL,
     @StatusType NVARCHAR(50),
 
     -- Hourly Data (Nullable)
@@ -81,13 +82,15 @@ BEGIN
             ManagerID,
             PersonID, 
             EmployeeTypeID, 
-            HireDate
+            HireDate,
+            TerminationDate
         )
         VALUES (
             @ManagerID,
             @PersonID,
             @EmployeeTypeID,
-            @ActualHireDate
+            @ActualHireDate,
+            @TerminationDate
         );
 
         DECLARE @EmployeeID INT = SCOPE_IDENTITY();

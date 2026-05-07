@@ -169,6 +169,8 @@ func (e *Executor) buildParamString(params map[string]interface{}) string {
 			paramValueStr = fmt.Sprintf("@%s = %g", paramName, v)
 		case bool:
 			paramValueStr = fmt.Sprintf("@%s = %t", paramName, v)
+		case nil:
+			paramValueStr = fmt.Sprintf("@%s = NULL", paramName)
 		default:
 			// For other types, convert to string
 			paramValueStr = fmt.Sprintf("@%s = '%s'", paramName, fmt.Sprintf("%v", v))

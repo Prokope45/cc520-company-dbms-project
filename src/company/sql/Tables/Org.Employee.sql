@@ -23,6 +23,7 @@ BEGIN
         ),
         CONSTRAINT [CK_Employee_TerminationDate_NotNull] CHECK (
             ([TerminationDate] IS NULL) OR
+            ([HireDate] IS NULL) OR
             ([TerminationDate] > [HireDate])
         ),
         CONSTRAINT [CK_Employee_Manager_NotSelf] CHECK (

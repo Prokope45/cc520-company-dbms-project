@@ -12,6 +12,8 @@ CREATE PROCEDURE [Org].[sp_UpdateEmployeeProfile]
     @ZipCode NVARCHAR(20),
     @RoleTitle NVARCHAR(100),
     @ManagerID INT = NULL,
+    @HireDate DATETIME2 = NULL,
+    @TerminationDate DATETIME2 = NULL,
     @StatusType NVARCHAR(50),
     
     -- Hourly Data (Nullable)
@@ -71,7 +73,9 @@ BEGIN
         -- Update Employee (Manager & Type)
         UPDATE [Org].[Employee]
         SET ManagerID = @ManagerID,
-            EmployeeTypeID = @NewEmployeeTypeID
+            EmployeeTypeID = @NewEmployeeTypeID,
+            HireDate = @HireDate,
+            TerminationDate = @TerminationDate
         WHERE EmployeeID = @EmployeeID;
 
         -- Handle Pay Structure
