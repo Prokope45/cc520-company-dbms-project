@@ -129,10 +129,12 @@ BEGIN
             -- SalaryEmployee table
             INSERT INTO [Org].[SalaryEmployee] (
                 EmployeeID,
+                SalaryID,
                 PaidTimeOffHours,
                 SickHours
             )
             VALUES (
+                @EmployeeID,
                 @EmployeeID,
                 @PaidTimeOffHours,
                 @SickHours

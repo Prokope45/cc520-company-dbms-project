@@ -155,10 +155,11 @@ BEGIN
             ELSE
                 INSERT INTO [Org].[SalaryEmployee] (
                     EmployeeID,
+                    SalaryID,
                     PaidTimeOffHours,
                     SickHours
                 )
-                VALUES (@EmployeeID, @PaidTimeOffHours, @SickHours);
+                VALUES (@EmployeeID, @EmployeeID, @PaidTimeOffHours, @SickHours);
         END
 
         -- Update Role/Department mapping
