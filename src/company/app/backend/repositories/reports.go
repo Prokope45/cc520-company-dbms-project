@@ -165,40 +165,41 @@ func (r *ReportsRepository) GetUnhiredWithManager_Aggregated(ctx context.Context
 	return reports, nil
 }
 
-// GetHighestPaidCEO gets the company with the highest paid CEO
-func (r *ReportsRepository) GetHighestPaidCEO(ctx context.Context) (*models.HighestPaidCEO, error) {
-	result := r.executor.Execute(ctx, "Report_HighestPaidCEO", nil)
+// GetHighestPaidExecutive gets the company with the highest paid executive
+func (r *ReportsRepository) GetHighestPaidExecutive(ctx context.Context) (*models.HighestPaidExecutive, error) {
+	result := r.executor.Execute(ctx, "Report_HighestPaidExecutive", nil)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
 	if len(result.Rows) == 0 {
-		return nil, nil // No CEO found
+		return nil, nil // No executive found
 	}
 
 	row := result.Rows[0]
-	report := models.HighestPaidCEO{
-		CompanyName: safeString(row["CompanyName"]),
-		CEOName:     safeString(row["CEOName"]),
-		CEOSalary:   safeFloat64(row["CEOSalary"]),
+	report := models.HighestPaidExecutive{
+		CompanyName:     safeString(row["CompanyName"]),
+		ExecutiveName:   safeString(row["ExecutiveName"]),
+		ExecutiveSalary: safeFloat64(row["ExecutiveSalary"]),
+		RoleName:        safeString(row["RoleName"]),
 	}
 
 	return &report, nil
 }
 
-// GetHighestPaidCEO_Aggregated gets aggregated CEO salary data per company
-func (r *ReportsRepository) GetHighestPaidCEO_Aggregated(ctx context.Context) ([]models.HighestPaidCEO_Aggregated, error) {
-	result := r.executor.Execute(ctx, "Report_HighestPaidCEO_Aggregated", nil)
+// GetHighestPaidExecutive_Aggregated gets aggregated executive salary data per company
+func (r *ReportsRepository) GetHighestPaidExecutive_Aggregated(ctx context.Context) ([]models.HighestPaidExecutive_Aggregated, error) {
+	result := r.executor.Execute(ctx, "Report_HighestPaidExecutive_Aggregated", nil)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
-	var reports []models.HighestPaidCEO_Aggregated
+	var reports []models.HighestPaidExecutive_Aggregated
 	for _, row := range result.Rows {
-		report := models.HighestPaidCEO_Aggregated{
-			CompanyName:      safeString(row["CompanyName"]),
-			CEOCount:         safeInt(row["CEOCount"]),
-			HighestCEOSalary: safeFloat64(row["HighestCEOSalary"]),
+		report := models.HighestPaidExecutive_Aggregated{
+			CompanyName:          safeString(row["CompanyName"]),
+			ExecutiveCount:       safeInt(row["ExecutiveCount"]),
+			HighestExecutiveSalary: safeFloat64(row["HighestExecutiveSalary"]),
 		}
 		reports = append(reports, report)
 	}

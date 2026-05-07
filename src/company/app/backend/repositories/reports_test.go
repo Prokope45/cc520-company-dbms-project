@@ -248,22 +248,23 @@ func TestGetUnhiredWithManager_Error(t *testing.T) {
 	}
 }
 
-func TestGetHighestPaidCEO_Success(t *testing.T) {
+func TestGetHighestPaidExecutive_Success(t *testing.T) {
 	mock := &mockExecutor{
-		expectedProcedure: "Report_HighestPaidCEO",
+		expectedProcedure: "Report_HighestPaidExecutive",
 		rows: []map[string]interface{}{
 			{
-				"CompanyName": "TechCorp",
-				"CEOName":     "John CEO",
-				"CEOSalary":   float64(500000),
+				"CompanyName":     "TechCorp",
+				"ExecutiveName":   "John CEO",
+				"ExecutiveSalary": float64(500000),
+				"RoleName":        "CEO",
 			},
 		},
 	}
 	repo := NewReportsRepository(mock)
 
-	report, err := repo.GetHighestPaidCEO(context.Background())
+	report, err := repo.GetHighestPaidExecutive(context.Background())
 	if err != nil {
-		t.Fatalf("GetHighestPaidCEO returned error: %v", err)
+		t.Fatalf("GetHighestPaidExecutive returned error: %v", err)
 	}
 	if report == nil {
 		t.Fatal("expected non-nil report")
@@ -271,40 +272,43 @@ func TestGetHighestPaidCEO_Success(t *testing.T) {
 	if report.CompanyName != "TechCorp" {
 		t.Errorf("expected company 'TechCorp', got '%s'", report.CompanyName)
 	}
-	if report.CEOName != "John CEO" {
-		t.Errorf("expected CEO 'John CEO', got '%s'", report.CEOName)
+	if report.ExecutiveName != "John CEO" {
+		t.Errorf("expected executive 'John CEO', got '%s'", report.ExecutiveName)
 	}
-	if report.CEOSalary != 500000 {
-		t.Errorf("expected salary 500000, got %f", report.CEOSalary)
+	if report.ExecutiveSalary != 500000 {
+		t.Errorf("expected salary 500000, got %f", report.ExecutiveSalary)
+	}
+	if report.RoleName != "CEO" {
+		t.Errorf("expected role 'CEO', got '%s'", report.RoleName)
 	}
 }
 
-func TestGetHighestPaidCEO_NoResult(t *testing.T) {
+func TestGetHighestPaidExecutive_NoResult(t *testing.T) {
 	mock := &mockExecutor{
-		expectedProcedure: "Report_HighestPaidCEO",
+		expectedProcedure: "Report_HighestPaidExecutive",
 		rows:              []map[string]interface{}{},
 	}
 	repo := NewReportsRepository(mock)
 
-	report, err := repo.GetHighestPaidCEO(context.Background())
+	report, err := repo.GetHighestPaidExecutive(context.Background())
 	if err != nil {
-		t.Fatalf("GetHighestPaidCEO returned error: %v", err)
+		t.Fatalf("GetHighestPaidExecutive returned error: %v", err)
 	}
 	if report != nil {
 		t.Error("expected nil report for no result")
 	}
 }
 
-func TestGetHighestPaidCEO_Error(t *testing.T) {
+func TestGetHighestPaidExecutive_Error(t *testing.T) {
 	mock := &mockExecutor{
-		expectedProcedure: "Report_HighestPaidCEO",
+		expectedProcedure: "Report_HighestPaidExecutive",
 		err:               errors.New("database error"),
 	}
 	repo := NewReportsRepository(mock)
 
-	report, err := repo.GetHighestPaidCEO(context.Background())
+	report, err := repo.GetHighestPaidExecutive(context.Background())
 	if err == nil {
-		t.Fatal("expected error from GetHighestPaidCEO, got nil")
+		t.Fatal("expected error from GetHighestPaidExecutive, got nil")
 	}
 	if report != nil {
 		t.Error("expected nil report on error")
@@ -347,13 +351,13 @@ func TestReportsRepository_ProcedureNamePrefix(t *testing.T) {
 			rows:        []map[string]interface{}{{"EmployeeName": "Test", "ManagerAssigned": "Manager"}},
 		},
 		{
-			procedure: "Report_HighestPaidCEO",
-			name:      "GetHighestPaidCEO",
+			procedure: "Report_HighestPaidExecutive",
+			name:      "GetHighestPaidExecutive",
 			call: func(r *ReportsRepository, m *mockExecutor) {
-				_, _ = r.GetHighestPaidCEO(context.Background())
+				_, _ = r.GetHighestPaidExecutive(context.Background())
 			},
 			expectCount: 1,
-			rows:        []map[string]interface{}{{"CompanyName": "Test", "CEOName": "CEO", "CEOSalary": 100000.0}},
+			rows:        []map[string]interface{}{{"CompanyName": "Test", "ExecutiveName": "Executive", "ExecutiveSalary": 100000.0, "RoleName": "CEO"}},
 		},
 	}
 

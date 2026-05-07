@@ -144,16 +144,16 @@ func (h *ReportsHandler) GetUnhiredWithManager_Aggregated(w http.ResponseWriter,
 	json.NewEncoder(w).Encode(reports)
 }
 
-// GetHighestPaidCEO handles GET /reports/highest-paid-ceo
-func (h *ReportsHandler) GetHighestPaidCEO(w http.ResponseWriter, r *http.Request) {
-	report, err := h.repo.GetHighestPaidCEO(r.Context())
+// GetHighestPaidExecutive handles GET /reports/highest-paid-executive
+func (h *ReportsHandler) GetHighestPaidExecutive(w http.ResponseWriter, r *http.Request) {
+	report, err := h.repo.GetHighestPaidExecutive(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if report == nil {
-		http.Error(w, "No CEO found", http.StatusNotFound)
+		http.Error(w, "No executive found", http.StatusNotFound)
 		return
 	}
 
@@ -161,9 +161,9 @@ func (h *ReportsHandler) GetHighestPaidCEO(w http.ResponseWriter, r *http.Reques
 	json.NewEncoder(w).Encode(report)
 }
 
-// GetHighestPaidCEO_Aggregated handles GET /reports/highest-paid-ceo-aggregated
-func (h *ReportsHandler) GetHighestPaidCEO_Aggregated(w http.ResponseWriter, r *http.Request) {
-	reports, err := h.repo.GetHighestPaidCEO_Aggregated(r.Context())
+// GetHighestPaidExecutive_Aggregated handles GET /reports/highest-paid-executive-aggregated
+func (h *ReportsHandler) GetHighestPaidExecutive_Aggregated(w http.ResponseWriter, r *http.Request) {
+	reports, err := h.repo.GetHighestPaidExecutive_Aggregated(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -171,7 +171,7 @@ func (h *ReportsHandler) GetHighestPaidCEO_Aggregated(w http.ResponseWriter, r *
 
 	w.Header().Set("Content-Type", "application/json")
 	if reports == nil {
-		reports = make([]models.HighestPaidCEO_Aggregated, 0)
+		reports = make([]models.HighestPaidExecutive_Aggregated, 0)
 	}
 	json.NewEncoder(w).Encode(reports)
 }

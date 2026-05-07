@@ -99,11 +99,11 @@ func main() {
 	r.HandleFunc("/reports/department-salary-ranks", reportsHandler.GetDepartmentSalaryRanks).Methods(http.MethodGet)
 	r.HandleFunc("/reports/top-terminated-hourly", reportsHandler.GetTopTerminatedHourly).Methods(http.MethodGet)
 	r.HandleFunc("/reports/unhired-with-manager", reportsHandler.GetUnhiredWithManager).Methods(http.MethodGet)
-	r.HandleFunc("/reports/highest-paid-ceo", reportsHandler.GetHighestPaidCEO).Methods(http.MethodGet)
+	r.HandleFunc("/reports/highest-paid-executive", reportsHandler.GetHighestPaidExecutive).Methods(http.MethodGet)
 
 	// API routes - Aggregated Reports
 	r.HandleFunc("/reports/department-salary-ranks-aggregated", reportsHandler.GetDepartmentSalary_Aggregated).Methods(http.MethodGet)
-	r.HandleFunc("/reports/highest-paid-ceo-aggregated", reportsHandler.GetHighestPaidCEO_Aggregated).Methods(http.MethodGet)
+	r.HandleFunc("/reports/highest-paid-executive-aggregated", reportsHandler.GetHighestPaidExecutive_Aggregated).Methods(http.MethodGet)
 	r.HandleFunc("/reports/top-terminated-hourly-aggregated", reportsHandler.GetTopTerminatedHourly_Aggregated).Methods(http.MethodGet)
 	r.HandleFunc("/reports/unhired-with-manager-aggregated", reportsHandler.GetUnhiredWithManager_Aggregated).Methods(http.MethodGet)
 

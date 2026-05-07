@@ -23,7 +23,7 @@ const ReportsTab = () => {
         { id: 'salary-ranks-aggregated', label: 'Department Salary Ranks' },
         { id: 'terminated-hourly-aggregated', label: 'Terminated Hourly' },
         { id: 'unhired-managers-aggregated', label: 'Unhired Employees' },
-        { id: 'highest-ceo-aggregated', label: 'Highest Paid CEO' }
+        { id: 'highest-executive-aggregated', label: 'Highest Paid Executive' }
     ];
 
     const fetchReport = async () => {
@@ -44,8 +44,8 @@ const ReportsTab = () => {
                 case 'unhired-managers-aggregated':
                     aggResult = await reportsApi.getUnhiredWithManager_Aggregated();
                     break;
-                case 'highest-ceo-aggregated':
-                    aggResult = await reportsApi.getHighestPaidCEO_Aggregated();
+                case 'highest-executive-aggregated':
+                    aggResult = await reportsApi.getHighestPaidExecutive_Aggregated();
                     break;
                 default:
                     aggResult = [];
@@ -63,8 +63,8 @@ const ReportsTab = () => {
                 case 'unhired-managers-aggregated':
                     detailResult = await reportsApi.getUnhiredWithManager();
                     break;
-                case 'highest-ceo-aggregated':
-                    detailResult = await reportsApi.getHighestPaidCEO();
+                case 'highest-executive-aggregated':
+                    detailResult = await reportsApi.getHighestPaidExecutive();
                     detailResult = detailResult ? [detailResult] : [];
                     break;
                 default:
@@ -86,7 +86,7 @@ const ReportsTab = () => {
         setError(null);
         setFilterText('');
         // We do NOT auto-fetch for parameter-required reports to allow users to set the date first
-        if (reportId === 'unhired-managers-aggregated' || reportId === 'highest-ceo-aggregated') {
+        if (reportId === 'unhired-managers-aggregated' || reportId === 'highest-executive-aggregated') {
             // Auto-fetch these since they have no params
             setTimeout(() => {
                 const fetchWithoutParams = async () => {
@@ -97,10 +97,10 @@ const ReportsTab = () => {
                             setAggregatedData(aggRes);
                             const detRes = await reportsApi.getUnhiredWithManager();
                             setDetailedData(detRes);
-                        } else if (reportId === 'highest-ceo-aggregated') {
-                            const aggRes = await reportsApi.getHighestPaidCEO_Aggregated();
+                        } else if (reportId === 'highest-executive-aggregated') {
+                            const aggRes = await reportsApi.getHighestPaidExecutive_Aggregated();
                             setAggregatedData(aggRes);
-                            const detRes = await reportsApi.getHighestPaidCEO();
+                            const detRes = await reportsApi.getHighestPaidExecutive();
                             setDetailedData(detRes ? [detRes] : []);
                         }
                     } catch (e) {
@@ -140,11 +140,12 @@ const ReportsTab = () => {
                     { name: 'Employee', selector: row => row.employee_name, sortable: true },
                     { name: 'Manager Assigned', selector: row => row.manager_assigned, sortable: true },
                 ];
-            case 'highest-ceo':
+            case 'highest-executive':
                 return [
                     { name: 'Company', selector: row => row.company_name, sortable: true },
-                    { name: 'CEO Name', selector: row => row.ceo_name, sortable: true },
-                    { name: 'Salary', selector: row => `$${row.ceo_salary?.toLocaleString()}`, sortable: true },
+                    { name: 'Executive', selector: row => row.executive_name, sortable: true },
+                    { name: 'Role', selector: row => row.role_name, sortable: true },
+                    { name: 'Salary', selector: row => `$${row.executive_salary?.toLocaleString()}`, sortable: true },
                 ];
             case 'salary-ranks-aggregated':
                 return [
@@ -168,11 +169,11 @@ const ReportsTab = () => {
                     { name: 'Unhired Count', selector: row => row.unhired_count, sortable: true },
                     { name: 'Manager Names', selector: row => row.manager_names, sortable: true },
                 ];
-            case 'highest-ceo-aggregated':
+            case 'highest-executive-aggregated':
                 return [
                     { name: 'Company', selector: row => row.company_name, sortable: true },
-                    { name: 'CEO Count', selector: row => row.ceo_count, sortable: true },
-                    { name: 'Highest Salary', selector: row => `$${row.highest_ceo_salary?.toLocaleString()}`, sortable: true },
+                    { name: 'Executive Count', selector: row => row.executive_count, sortable: true },
+                    { name: 'Highest Salary', selector: row => `$${row.highest_executive_salary?.toLocaleString()}`, sortable: true },
                 ];
             default:
                 return [];
@@ -205,11 +206,12 @@ const ReportsTab = () => {
                     { name: 'Employee', selector: row => row.employee_name, sortable: true },
                     { name: 'Manager Assigned', selector: row => row.manager_assigned, sortable: true },
                 ];
-            case 'highest-ceo-aggregated':
+            case 'highest-executive-aggregated':
                 return [
                     { name: 'Company', selector: row => row.company_name, sortable: true },
-                    { name: 'CEO Name', selector: row => row.ceo_name, sortable: true },
-                    { name: 'Salary', selector: row => `$${row.ceo_salary?.toLocaleString()}`, sortable: true },
+                    { name: 'Executive', selector: row => row.executive_name, sortable: true },
+                    { name: 'Role', selector: row => row.role_name, sortable: true },
+                    { name: 'Salary', selector: row => `$${row.executive_salary?.toLocaleString()}`, sortable: true },
                 ];
             default:
                 return [];
@@ -224,8 +226,8 @@ const ReportsTab = () => {
                 return 'Summary of terminated hourly employees by department, including termination counts grouped by company and department.';
             case 'unhired-managers-aggregated':
                 return 'Department-level counts of unhired employees assigned to managers, grouped by company and department.';
-            case 'highest-ceo-aggregated':
-                return 'Company-level CEO compensation summary showing CEO counts and highest salaries.';
+            case 'highest-executive-aggregated':
+                return 'Company-level executive compensation summary showing executive counts and highest salaries.';
             default:
                 return '';
         }
@@ -239,8 +241,8 @@ const ReportsTab = () => {
                 return 'Individual terminated hourly employee records with their hourly pay rates and termination dates.';
             case 'unhired-managers-aggregated':
                 return 'Individual records of unhired employees and their assigned managers.';
-            case 'highest-ceo-aggregated':
-                return 'Individual CEO records showing company, name, and salary details.';
+            case 'highest-executive-aggregated':
+                return 'Individual executive records showing company, role, name, and salary details.';
             default:
                 return '';
         }

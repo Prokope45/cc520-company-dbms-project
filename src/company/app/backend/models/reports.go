@@ -61,16 +61,17 @@ type UnhiredWithManager_Aggregated struct {
 	ManagerNames   string `json:"manager_names"`
 }
 
-// HighestPaidCEO represents the company and name of the highest paid CEO
-type HighestPaidCEO struct {
-	CompanyName string  `json:"company_name"`
-	CEOName     string  `json:"ceo_name"`
-	CEOSalary   float64 `json:"ceo_salary"`
+// HighestPaidExecutive represents the company and name of the highest paid executive
+type HighestPaidExecutive struct {
+	CompanyName   string  `json:"company_name"`
+	ExecutiveName string  `json:"executive_name"`
+	ExecutiveSalary float64 `json:"executive_salary"`
+	RoleName      string  `json:"role_name"`
 }
 
-// HighestPaidCEO_Aggregated represents aggregated CEO salary data per company
-type HighestPaidCEO_Aggregated struct {
-	CompanyName      string  `json:"company_name"`
-	CEOCount         int     `json:"ceo_count"`
-	HighestCEOSalary float64 `json:"highest_ceo_salary"`
+// HighestPaidExecutive_Aggregated represents aggregated executive salary data per company
+type HighestPaidExecutive_Aggregated struct {
+	CompanyName       string  `json:"company_name"`
+	ExecutiveCount    int     `json:"executive_count"`
+	HighestExecutiveSalary float64 `json:"highest_executive_salary"`
 }

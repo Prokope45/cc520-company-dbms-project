@@ -41,13 +41,13 @@ export const reportsApi = {
         return response.data;
     },
 
-    getHighestPaidCEO: async () => {
-        const response = await axios.get(`${API_BASE_URL}/reports/highest-paid-ceo`);
+    getHighestPaidExecutive: async () => {
+        const response = await axios.get(`${API_BASE_URL}/reports/highest-paid-executive`);
         return response.data;
     },
 
-    getHighestPaidCEO_Aggregated: async () => {
-        const response = await axios.get(`${API_BASE_URL}/reports/highest-paid-ceo-aggregated`);
+    getHighestPaidExecutive_Aggregated: async () => {
+        const response = await axios.get(`${API_BASE_URL}/reports/highest-paid-executive-aggregated`);
         return response.data;
     }
 };
