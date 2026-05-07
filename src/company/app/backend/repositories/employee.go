@@ -273,6 +273,7 @@ func (r *EmployeeRepository) mapRowToEmployee(row map[string]interface{}) models
 	return models.Employee{
 		EmployeeID:       safeInt64(row["EmployeeID"]),
 		CompanyID:        safeInt64(row["CompanyID"]),
+		Company:          safeString(row["Company"]),
 		DepartmentID:     safeInt64(row["DepartmentID"]),
 		Department:       safeString(row["Department"]),
 		FirstName:        safeString(row["FirstName"]),

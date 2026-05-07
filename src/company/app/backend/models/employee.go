@@ -11,6 +11,7 @@ package models
 type Employee struct {
 	EmployeeID   int64  `json:"employee_id"`
 	CompanyID    int64  `json:"company_id"`
+	Company      string `json:"company"`
 	DepartmentID int64  `json:"department_id"`
 	Department   string `json:"department"`
 	FirstName    string `json:"first_name"`
@@ -25,7 +26,7 @@ type Employee struct {
 	AddressLineTwo string `json:"address_line_two"`
 	City           string `json:"city"`
 	State          string `json:"state"`
-	ZipCode string `json:"zip_code"`
+	ZipCode        string `json:"zip_code"`
 
 	// Organization & Role Data
 	RoleTitle       string `json:"role_title"`

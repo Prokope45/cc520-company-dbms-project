@@ -153,7 +153,7 @@ const EmployeeTable = () => {
 
     const filteredItems = employees.filter(
         item => {
-            const searchStr = `${item.first_name} ${item.last_name} ${item.email} ${item.department} ${item.role_title}`.toLowerCase();
+            const searchStr = `${item.first_name} ${item.last_name} ${item.email} ${item.company} ${item.department} ${item.role_title}`.toLowerCase();
             return searchStr.includes(filterText.toLowerCase());
         }
     );
@@ -176,6 +176,11 @@ const EmployeeTable = () => {
             selector: row => row.email,
             sortable: true,
             width: '200px',
+        },
+        {
+            name: 'Company',
+            selector: row => row.company,
+            sortable: true,
         },
         {
             name: 'Department',

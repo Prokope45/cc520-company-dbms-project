@@ -4,6 +4,7 @@ BEGIN
     SELECT 
         E.EmployeeID,
         D.CompanyID,
+        C.[Name] AS Company,
         DER.DepartmentID,
         D.[Name] AS Department,
         P.FirstName,
@@ -41,6 +42,7 @@ BEGIN
         LEFT JOIN [Org].[EmployeeType] ET ON ET.EmployeeTypeID = E.EmployeeTypeID
         LEFT JOIN [Org].[DepEmpRole] DER ON DER.EmployeeID = E.EmployeeID
         LEFT JOIN [Org].[Department] D ON D.DepartmentID = DER.DepartmentID
+        LEFT JOIN [Org].[Company] C ON C.CompanyID = D.CompanyID
         LEFT JOIN [Org].[Role] R ON R.RoleID = DER.RoleID
 
         -- Self-join for Manager Name
