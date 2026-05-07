@@ -16,11 +16,7 @@ const EmployeeTable = () => {
     const [employees, setEmployees] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [companies, setCompanies] = useState([]);
-    const [roles, setRoles] = useState([
-        'Intern', 'Developer I', 'Developer II', 'Developer III',
-        'Senior Engineer', 'Member', 'Manager', 'HR Manager', 'Director',
-        'HR Manager', 'CFO', 'CTO', 'CHRO', 'CEO'
-    ]);
+    const [roles, setRoles] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [filterText, setFilterText] = useState('');
 
@@ -44,6 +40,7 @@ const EmployeeTable = () => {
         fetchEmployees();
         fetchDepartments();
         fetchCompanies();
+        fetchRoles();
     }, []);
 
     const fetchEmployees = async () => {
@@ -70,6 +67,15 @@ const EmployeeTable = () => {
             setCompanies(response.data || []);
         } catch (error) {
             console.error('Error fetching companies:', error);
+        }
+    };
+
+    const fetchRoles = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/roles`);
+            setRoles(response.data || []);
+        } catch (error) {
+            console.error('Error fetching roles:', error);
         }
     };
 
@@ -350,9 +356,9 @@ const EmployeeTable = () => {
                                     <label>Role:</label>
                                     <Select 
                                         name="role_title" 
-                                        value={roles.map(r => ({ value: r, label: r })).find(o => o.value === currentEmployee.role_title) || null}
+                                        value={roles.map(r => ({ value: r.name, label: r.name })).find(o => o.value === currentEmployee.role_title) || null}
                                         onChange={handleSelectChange}
-                                        options={roles.map(r => ({ value: r, label: r }))}
+                                        options={roles.map(r => ({ value: r.name, label: r.name }))}
                                         placeholder="Select Role"
                                         isClearable
                                         required
