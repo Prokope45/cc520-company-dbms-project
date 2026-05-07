@@ -1,3 +1,7 @@
+/*
+Gets the number of unhired employees assigned to managers for each department.
+*/
+
 CREATE PROCEDURE [Org].[sp_Report_UnhiredWithManager_Aggregated]
 AS
 BEGIN

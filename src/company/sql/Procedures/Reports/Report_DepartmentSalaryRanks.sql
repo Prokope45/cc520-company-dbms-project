@@ -1,3 +1,7 @@
+/*
+Gets the rankines of employees based on their salary amounts within their departments.
+*/
+
 CREATE PROCEDURE [Org].[sp_Report_DepartmentSalaryRanks]
     @HireDate DATETIME2
 AS

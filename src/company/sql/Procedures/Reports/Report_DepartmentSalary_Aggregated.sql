@@ -1,3 +1,8 @@
+/*
+Provides summary statistics of the number of employees, and the upper
+and lower bounds and average salary of employees in each department.
+*/
+
 CREATE PROCEDURE [Org].[sp_Report_DepartmentSalary_Aggregated]
     @HireDate DATETIME2
 AS

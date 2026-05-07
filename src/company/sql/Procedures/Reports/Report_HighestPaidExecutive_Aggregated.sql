@@ -1,3 +1,8 @@
+/*
+Provides summary statistics of the number executives and the highest salary
+within each company.
+*/
+
 CREATE PROCEDURE [Org].[sp_Report_HighestPaidExecutive_Aggregated]
 AS
 BEGIN

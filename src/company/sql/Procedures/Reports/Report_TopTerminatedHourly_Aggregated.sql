@@ -1,3 +1,7 @@
+/*
+Shows the number of terminated hourly employees and when the most recent termination occurred.
+*/
+
 CREATE PROCEDURE [Org].[sp_Report_TopTerminatedHourly_Aggregated]
     @TerminationDate DATETIME2
 AS
