@@ -660,8 +660,8 @@ func TestSafeString_String(t *testing.T) {
 
 func TestSafeString_NonString(t *testing.T) {
 	result := safeString(123)
-	if result != "" {
-		t.Errorf("expected empty string for non-string, got '%s'", result)
+	if result != "123" {
+		t.Errorf("expected '123', got '%s'", result)
 	}
 }
 

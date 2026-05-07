@@ -161,6 +161,8 @@ const ReportsTab = () => {
                     { name: 'Company', selector: row => row.company_name, sortable: true },
                     { name: 'Department', selector: row => row.department_name, sortable: true },
                     { name: 'Terminated Count', selector: row => row.terminated_count, sortable: true },
+                    { name: 'Avg Hourly Pay', selector: row => `$${row.avg_terminated_hourly_pay?.toFixed(2)}`, sortable: true },
+                    { name: 'Most Recent Termination', selector: row => row.latest_termination_date, sortable: true },
                 ];
             case 'unhired-managers-aggregated':
                 return [

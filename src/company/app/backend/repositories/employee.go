@@ -11,6 +11,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
+	"time"
 
 	"cc520-company-dbms-project/src/company/app/backend/models"
 )
@@ -201,7 +202,24 @@ func safeString(val interface{}) string {
 	if s, ok := val.(string); ok {
 		return s
 	}
-	return ""
+	if b, ok := val.([]byte); ok {
+		return string(b)
+	}
+	if t, ok := val.(time.Time); ok {
+		return t.Format("2006-01-02")
+	}
+	switch v := val.(type) {
+	case int64:
+		return fmt.Sprintf("%d", v)
+	case int32:
+		return fmt.Sprintf("%d", v)
+	case float64:
+		return fmt.Sprintf("%g", v)
+	case bool:
+		return fmt.Sprintf("%t", v)
+	default:
+		return fmt.Sprintf("%v", v)
+	}
 }
 
 func safeInt64(val interface{}) int64 {
