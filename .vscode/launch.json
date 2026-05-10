@@ -23,40 +23,26 @@
       "runtimeArgs": ["vite", "--host", "0.0.0.0"],
       "cwd": "${workspaceFolder}/src/company/app/frontend",
       "console": "integratedTerminal",
-      // "serverReadyAction": {
-      //   "pattern": "Local:\\s+http://localhost:([0-9]+)",
-      //   "uriFormat": "http://localhost:%s",
-      //   "action": "openExternally"
-      // }
-    },
-    {
-      "name": "Frontend: Build",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite", "build"],
-      "cwd": "${workspaceFolder}/src/company/app/frontend",
-      "console": "integratedTerminal"
+      "serverReadyAction": {
+        "action": "startDebugging",
+        "name": "Frontend: Debug Browser",
+        "pattern": "Local:\\s+http://(?:localhost|0\\.0\\.0\\.0):([0-9]+)"
+      },
+      // "preLaunchTask": ""
     },
     {
       "name": "Frontend: Debug Browser",
       "type": "firefox",
       "request": "launch",
-      "url": "http://0.0.0.0:5173",
+      "url": "http://localhost:5173",
       "webRoot": "${workspaceFolder}/src/company/app/frontend",
-      "reAttach": true,
-      "serverReadyAction": {
-        "pattern": "Local:\\s+http://0.0.0.0:([0-9]+)",
-        "uriFormat": "http://0.0.0.0:%s",
-        "action": "openExternally"
-      },
-      // "preLaunchTask": "npm: dev"
+      "reAttach": true
     }
   ],
   "compounds": [
     {
       "name": "Fullstack",
-      "configurations": ["Backend: Launch Server", "Frontend: Build", "Frontend: Dev Server", "Frontend: Debug Browser"],
+      "configurations": ["Backend: Launch Server", "Frontend: Dev Server", "Frontend: Debug Browser"],
       "stopAll": true
     }
   ]

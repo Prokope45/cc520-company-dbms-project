@@ -93,6 +93,9 @@
     },
     "ghcr.io/devcontainers/features/node:2": {
       "version": "20"
+    },
+    "ghcr.io/devcontainers/features/go:1": {
+        "version": "latest"
     }
   },
   "mounts": [
