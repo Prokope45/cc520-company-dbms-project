@@ -6,7 +6,7 @@ const SearchBar = ({ filterText, onFilter, placeholderText }) => (
     <div className="search-input-wrapper">
       <span
         className="search-icon"
-        style={{ display: 'inline-block', width: '18px', height: '18px' }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px' }}
       >
         <FaSearch />
       </span>

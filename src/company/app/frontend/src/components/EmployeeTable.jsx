@@ -159,7 +159,7 @@ const EmployeeTable = () => {
 
     const filteredItems = employees.filter(
         item => {
-            const searchStr = `${item.first_name} ${item.last_name} ${item.email} ${item.company} ${item.department} ${item.role_title}`.toLowerCase();
+            const searchStr = `${item.first_name} ${item.last_name} ${item.email} ${item.company} ${item.department} ${item.role_title} ${item.status_type}`.toLowerCase();
             return searchStr.includes(filterText.toLowerCase());
         }
     );
