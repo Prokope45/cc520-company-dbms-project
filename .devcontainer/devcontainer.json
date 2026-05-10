@@ -98,13 +98,6 @@
         "version": "latest"
     }
   },
-  "mounts": [
-    {
-      "source": "${localWorkspaceFolder}/.opencode/auth.json",
-      "target": "/mnt/opencode-auth.json",
-      "type": "bind"
-    }
-  ],
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [
     1433,
