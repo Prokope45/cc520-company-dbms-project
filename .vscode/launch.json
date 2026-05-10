@@ -27,8 +27,7 @@
         "action": "startDebugging",
         "name": "Frontend: Debug Browser",
         "pattern": "Local:\\s+http://(?:localhost|0\\.0\\.0\\.0):([0-9]+)"
-      },
-      // "preLaunchTask": ""
+      }
     },
     {
       "name": "Frontend: Debug Browser",
@@ -42,7 +41,7 @@
   "compounds": [
     {
       "name": "Fullstack",
-      "configurations": ["Backend: Launch Server", "Frontend: Dev Server", "Frontend: Debug Browser"],
+      "configurations": ["Backend: Launch Server", "Frontend: Dev Server"],
       "stopAll": true
     }
   ]
