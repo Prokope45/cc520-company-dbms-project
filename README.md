@@ -161,7 +161,7 @@ You can also run each of these in separate terminals to achieve the same:
 - `cd src/company/app/frontend && npm run dev`
   - **Frontend App:** Typically runs on `http://localhost:5173` (check terminal output from Vite)
 
-Navigate to the Frontend App URL in your web browser to interact with the Company Management Database System.
+A Firefox Debugger Browser (if Firefox is installed on host machine) should automatically open showing the frontend. If not, just navigate to `http://localhost:5173` on your chosen browser to interact with the Company Management Database System.
 
 ## OpenCode Setup
 
