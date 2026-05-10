@@ -32,7 +32,7 @@ type Registry struct {
 // baseDir should point to the SQL Procedures directory (e.g., .../sql/Procedures)
 // procedureDirs are subdirectories within baseDir to scan (e.g., ["company"])
 func NewRegistry() *Registry {
-	cwd := "/workspaces/cc520-company-dbms-project"
+	cwd := os.Getenv("PROJECT_ROOT")
 	sqlPath := filepath.Join(cwd, "src", "company", "sql", "Procedures")
 
 	return &Registry{

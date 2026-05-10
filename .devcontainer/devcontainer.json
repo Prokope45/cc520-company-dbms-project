@@ -105,7 +105,8 @@
     5173
   ],
   "remoteEnv": {
-    "SQL_SECRETS": "{\"credentials\":[{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|db:CC520|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:CC520|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|db:WideWorldImporters|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:WideWorldImporters|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|user:SA\",\"password\":\"sup3rs3cur3P@ssword\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:master|user:SA\",\"password\":\"sup3rs3cur3P@ssword\"}]}"
+    "SQL_SECRETS": "{\"credentials\":[{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|db:CC520|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:CC520|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|db:WideWorldImporters|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:WideWorldImporters|user:cc520-admin\",\"password\":\"database3ssentials!\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Profile|server:localhost|user:SA\",\"password\":\"sup3rs3cur3P@ssword\"},{\"credentialId\":\"Microsoft.SqlTools|itemtype:Mru|server:localhost|db:master|user:SA\",\"password\":\"sup3rs3cur3P@ssword\"}]}",
+    "PROJECT_ROOT": "${containerWorkspaceFolder}"
   },
   "postCreateCommand": "mkdir -p ~/.sqlsecrets && echo \"$SQL_SECRETS\" > ~/.sqlsecrets/sqlsecrets.json"
 }
